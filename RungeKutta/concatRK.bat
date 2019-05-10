@@ -1,0 +1,1 @@
+copy RKheader + RKdefineConstants + RKdefineReactionRates + RKkernelFunction + RKkernelVariablesInit + RKinitMain + RKinitializeSpecies + RKkernelCall + RKreceiveData + RKprintResults + RKfreeDevice + RKendMain kernelRK.cu

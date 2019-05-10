@@ -1,0 +1,698 @@
+#define simulateStepReaction(i) \
+switch (i) { \
+case 0: \
+reactionRate = ksynp53mRNA * Source; \
+atomicAdd(p53_mRNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 1: \
+reactionRate = kdegp53mRNA * p53_mRNA; \
+atomicAdd(p53_mRNA_aux, - step * 1.000000 * reactionRate); \
+break; \
+case 2: \
+reactionRate = ksynMdm2 * Mdm2_mRNA; \
+atomicAdd(Mdm2_mRNA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_mRNA_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 3: \
+reactionRate = ksynMdm2mRNA * p53; \
+atomicAdd(p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_mRNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 4: \
+reactionRate = ksynMdm2mRNA * p53_P; \
+atomicAdd(p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_P_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_mRNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 5: \
+reactionRate = ksynMdm2mRNAGSK3bp53 * GSK3b_p53; \
+atomicAdd(GSK3b_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_mRNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 6: \
+reactionRate = ksynMdm2mRNAGSK3bp53 * GSK3b_p53_P; \
+atomicAdd(GSK3b_p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_P_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_mRNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 7: \
+reactionRate = kdegMdm2mRNA * Mdm2_mRNA; \
+atomicAdd(Mdm2_mRNA_aux, - step * 1.000000 * reactionRate); \
+break; \
+case 8: \
+reactionRate = kbinMdm2p53 * p53 * Mdm2; \
+atomicAdd(p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_aux, step * 1.000000 * reactionRate); \
+break; \
+case 9: \
+reactionRate = krelMdm2p53 * Mdm2_p53; \
+atomicAdd(Mdm2_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 10: \
+reactionRate = kbinGSK3bp53 * GSK3b * p53; \
+atomicAdd(GSK3b_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_aux, step * 1.000000 * reactionRate); \
+break; \
+case 11: \
+reactionRate = krelGSK3bp53 * GSK3b_p53; \
+atomicAdd(GSK3b_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_aux, step * 1.000000 * reactionRate); \
+atomicAdd(p53_aux, step * 1.000000 * reactionRate); \
+break; \
+case 12: \
+reactionRate = kbinGSK3bp53 * GSK3b * p53_P; \
+atomicAdd(GSK3b_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_P_aux, step * 1.000000 * reactionRate); \
+break; \
+case 13: \
+reactionRate = krelGSK3bp53 * GSK3b_p53_P; \
+atomicAdd(GSK3b_p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_aux, step * 1.000000 * reactionRate); \
+atomicAdd(p53_P_aux, step * 1.000000 * reactionRate); \
+break; \
+case 14: \
+reactionRate = kbinE1Ub * E1 * Ub * ATP / (5000 + ATP); \
+atomicAdd(E1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E1_Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 15: \
+reactionRate = kbinE2Ub * E2 * E1_Ub; \
+atomicAdd(E2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E1_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 16: \
+reactionRate = kMdm2Ub * Mdm2 * E2_Ub; \
+atomicAdd(Mdm2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 17: \
+reactionRate = kMdm2PolyUb * Mdm2_Ub * E2_Ub; \
+atomicAdd(Mdm2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 18: \
+reactionRate = kMdm2PolyUb * Mdm2_Ub2 * E2_Ub; \
+atomicAdd(Mdm2_Ub2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub3_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 19: \
+reactionRate = kMdm2PolyUb * Mdm2_Ub3 * E2_Ub; \
+atomicAdd(Mdm2_Ub3_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub4_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 20: \
+reactionRate = kactDUBMdm2 * Mdm2_Ub4 * Mdm2DUB; \
+atomicAdd(Mdm2_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub3_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 21: \
+reactionRate = kactDUBMdm2 * Mdm2_Ub3 * Mdm2DUB; \
+atomicAdd(Mdm2_Ub3_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 22: \
+reactionRate = kactDUBMdm2 * Mdm2_Ub2 * Mdm2DUB; \
+atomicAdd(Mdm2_Ub2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 23: \
+reactionRate = kactDUBMdm2 * Mdm2_Ub * Mdm2DUB; \
+atomicAdd(Mdm2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 24: \
+reactionRate = kbinProt * Mdm2_Ub4 * Proteasome; \
+atomicAdd(Mdm2_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_Ub4_Proteasome_aux, step * 1.000000 * reactionRate); \
+break; \
+case 25: \
+reactionRate = kdegMdm2 * Mdm2_Ub4_Proteasome * kproteff; \
+atomicAdd(Mdm2_Ub4_Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 4.000000 * reactionRate); \
+break; \
+case 26: \
+reactionRate = ksynp53 * p53_mRNA; \
+atomicAdd(p53_mRNA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_aux, step * 1.000000 * reactionRate); \
+atomicAdd(p53_mRNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 27: \
+reactionRate = kp53Ub * E2_Ub * Mdm2_p53; \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_Ub_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 28: \
+reactionRate = kp53PolyUb * Mdm2_p53_Ub * E2_Ub; \
+atomicAdd(Mdm2_p53_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_Ub2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 29: \
+reactionRate = kp53PolyUb * Mdm2_p53_Ub2 * E2_Ub; \
+atomicAdd(Mdm2_p53_Ub2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_Ub3_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 30: \
+reactionRate = kp53PolyUb * Mdm2_p53_Ub3 * E2_Ub; \
+atomicAdd(Mdm2_p53_Ub3_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_Ub4_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 31: \
+reactionRate = kactDUBp53 * Mdm2_p53_Ub4 * p53DUB; \
+atomicAdd(Mdm2_p53_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_Ub3_aux, step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 32: \
+reactionRate = kactDUBp53 * Mdm2_p53_Ub3 * p53DUB; \
+atomicAdd(Mdm2_p53_Ub3_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_Ub2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 33: \
+reactionRate = kactDUBp53 * Mdm2_p53_Ub2 * p53DUB; \
+atomicAdd(Mdm2_p53_Ub2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_Ub_aux, step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 34: \
+reactionRate = kactDUBp53 * Mdm2_p53_Ub * p53DUB; \
+atomicAdd(Mdm2_p53_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_p53_aux, step * 1.000000 * reactionRate); \
+atomicAdd(p53DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 35: \
+reactionRate = kphosMdm2GSK3b * Mdm2_p53_Ub4 * GSK3b; \
+atomicAdd(Mdm2_p53_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P1_p53_Ub4_aux, step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_aux, step * 1.000000 * reactionRate); \
+break; \
+case 36: \
+reactionRate = kphosMdm2GSK3bp53 * Mdm2_p53_Ub4 * GSK3b_p53; \
+atomicAdd(Mdm2_p53_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P1_p53_Ub4_aux, step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_aux, step * 1.000000 * reactionRate); \
+break; \
+case 37: \
+reactionRate = kphosMdm2GSK3bp53 * Mdm2_p53_Ub4 * GSK3b_p53_P; \
+atomicAdd(Mdm2_p53_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P1_p53_Ub4_aux, step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_P_aux, step * 1.000000 * reactionRate); \
+break; \
+case 38: \
+reactionRate = kbinProt * Mdm2_P1_p53_Ub4 * Proteasome; \
+atomicAdd(Mdm2_P1_p53_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_Ub4_Proteasome_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 39: \
+reactionRate = kdegp53 * kproteff * p53_Ub4_Proteasome * ATP / (5000 + ATP); \
+atomicAdd(p53_Ub4_Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 4.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, step * 1.000000 * reactionRate); \
+break; \
+case 40: \
+reactionRate = kbinMTTau * Tau; \
+atomicAdd(Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(MT_Tau_aux, step * 1.000000 * reactionRate); \
+break; \
+case 41: \
+reactionRate = krelMTTau * MT_Tau; \
+atomicAdd(MT_Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_aux, step * 1.000000 * reactionRate); \
+break; \
+case 42: \
+reactionRate = kphospTauGSK3bp53 * GSK3b_p53 * Tau; \
+atomicAdd(GSK3b_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 43: \
+reactionRate = kphospTauGSK3bp53 * GSK3b_p53 * Tau_P1; \
+atomicAdd(GSK3b_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 44: \
+reactionRate = kphospTauGSK3bp53 * GSK3b_p53_P * Tau; \
+atomicAdd(GSK3b_p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_P_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 45: \
+reactionRate = kphospTauGSK3bp53 * GSK3b_p53_P * Tau_P1; \
+atomicAdd(GSK3b_p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_P_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 46: \
+reactionRate = kphospTauGSK3b * GSK3b * Tau; \
+atomicAdd(GSK3b_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 47: \
+reactionRate = kphospTauGSK3b * GSK3b * Tau_P1; \
+atomicAdd(GSK3b_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 48: \
+reactionRate = kdephospTau * Tau_P2 * PP1; \
+atomicAdd(Tau_P2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(PP1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_P1_aux, step * 1.000000 * reactionRate); \
+atomicAdd(PP1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 49: \
+reactionRate = kdephospTau * Tau_P1 * PP1; \
+atomicAdd(Tau_P1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(PP1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Tau_aux, step * 1.000000 * reactionRate); \
+atomicAdd(PP1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 50: \
+reactionRate = kaggTauP1 * Tau_P1 * (Tau_P1 - 1) * 0.5; \
+atomicAdd(Tau_P1_aux, - step * 2.000000 * reactionRate); \
+atomicAdd(AggTau_aux, step * 2.000000 * reactionRate); \
+break; \
+case 51: \
+reactionRate = kaggTauP1 * Tau_P1 * AggTau; \
+atomicAdd(Tau_P1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggTau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggTau_aux, step * 2.000000 * reactionRate); \
+break; \
+case 52: \
+reactionRate = kaggTauP2 * Tau_P2 * (Tau_P2 - 1) * 0.5; \
+atomicAdd(Tau_P2_aux, - step * 2.000000 * reactionRate); \
+atomicAdd(AggTau_aux, step * 2.000000 * reactionRate); \
+break; \
+case 53: \
+reactionRate = kaggTauP2 * Tau_P2 * AggTau; \
+atomicAdd(Tau_P2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggTau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggTau_aux, step * 2.000000 * reactionRate); \
+break; \
+case 54: \
+reactionRate = kaggTau * Tau * (Tau - 1) * 0.5; \
+atomicAdd(Tau_aux, - step * 2.000000 * reactionRate); \
+atomicAdd(AggTau_aux, step * 2.000000 * reactionRate); \
+break; \
+case 55: \
+reactionRate = kaggTau * Tau * AggTau; \
+atomicAdd(Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggTau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggTau_aux, step * 2.000000 * reactionRate); \
+break; \
+case 56: \
+reactionRate = ktangfor * AggTau * (AggTau - 1) * 0.5; \
+atomicAdd(AggTau_aux, - step * 2.000000 * reactionRate); \
+atomicAdd(NFT_aux, step * 2.000000 * reactionRate); \
+break; \
+case 57: \
+reactionRate = ktangfor * AggTau * NFT; \
+atomicAdd(AggTau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(NFT_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(NFT_aux, step * 2.000000 * reactionRate); \
+break; \
+case 58: \
+reactionRate = kinhibprot * AggTau * Proteasome; \
+atomicAdd(AggTau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggTau_Proteasome_aux, step * 1.000000 * reactionRate); \
+break; \
+case 59: \
+reactionRate = kprodAbeta * Source; \
+atomicAdd(Abeta_aux, step * 1.000000 * reactionRate); \
+break; \
+case 60: \
+reactionRate = kprodAbeta2 * GSK3b_p53; \
+atomicAdd(GSK3b_p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Abeta_aux, step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_aux, step * 1.000000 * reactionRate); \
+break; \
+case 61: \
+reactionRate = kprodAbeta2 * GSK3b_p53_P; \
+atomicAdd(GSK3b_p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Abeta_aux, step * 1.000000 * reactionRate); \
+atomicAdd(GSK3b_p53_P_aux, step * 1.000000 * reactionRate); \
+break; \
+case 62: \
+reactionRate = kinhibprot * AbetaDimer * Proteasome; \
+atomicAdd(AbetaDimer_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggAbeta_Proteasome_aux, step * 1.000000 * reactionRate); \
+break; \
+case 63: \
+reactionRate = kdegAbeta * Abeta; \
+atomicAdd(Abeta_aux, - step * 1.000000 * reactionRate); \
+break; \
+case 64: \
+reactionRate = ksynp53mRNAAbeta * Abeta; \
+atomicAdd(Abeta_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_mRNA_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Abeta_aux, step * 1.000000 * reactionRate); \
+break; \
+case 65: \
+reactionRate = kdam * IR; \
+atomicAdd(IR_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(IR_aux, step * 1.000000 * reactionRate); \
+atomicAdd(damDNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 66: \
+reactionRate = krepair * damDNA; \
+atomicAdd(damDNA_aux, - step * 1.000000 * reactionRate); \
+break; \
+case 67: \
+reactionRate = kactATM * damDNA * ATMI; \
+atomicAdd(damDNA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(ATMI_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(damDNA_aux, step * 1.000000 * reactionRate); \
+atomicAdd(ATMA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 68: \
+reactionRate = kphosp53 * p53 * ATMA; \
+atomicAdd(p53_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(ATMA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_P_aux, step * 1.000000 * reactionRate); \
+atomicAdd(ATMA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 69: \
+reactionRate = kdephosp53 * p53_P; \
+atomicAdd(p53_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(p53_aux, step * 1.000000 * reactionRate); \
+break; \
+case 70: \
+reactionRate = kphosMdm2 * Mdm2 * ATMA; \
+atomicAdd(Mdm2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(ATMA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_aux, step * 1.000000 * reactionRate); \
+atomicAdd(ATMA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 71: \
+reactionRate = kdephosMdm2 * Mdm2_P; \
+atomicAdd(Mdm2_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 72: \
+reactionRate = kMdm2PUb * Mdm2_P * E2_Ub; \
+atomicAdd(Mdm2_P_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 73: \
+reactionRate = kMdm2PolyUb * Mdm2_P_Ub * E2_Ub; \
+atomicAdd(Mdm2_P_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 74: \
+reactionRate = kMdm2PolyUb * Mdm2_P_Ub2 * E2_Ub; \
+atomicAdd(Mdm2_P_Ub2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub3_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 75: \
+reactionRate = kMdm2PolyUb * Mdm2_P_Ub3 * E2_Ub; \
+atomicAdd(Mdm2_P_Ub3_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(E2_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub4_aux, step * 1.000000 * reactionRate); \
+atomicAdd(E2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 76: \
+reactionRate = kactDUBMdm2 * Mdm2_P_Ub4 * Mdm2DUB; \
+atomicAdd(Mdm2_P_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub3_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 77: \
+reactionRate = kactDUBMdm2 * Mdm2_P_Ub3 * Mdm2DUB; \
+atomicAdd(Mdm2_P_Ub3_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 78: \
+reactionRate = kactDUBMdm2 * Mdm2_P_Ub2 * Mdm2DUB; \
+atomicAdd(Mdm2_P_Ub2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 79: \
+reactionRate = kactDUBMdm2 * Mdm2_P_Ub * Mdm2DUB; \
+atomicAdd(Mdm2_P_Ub_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2DUB_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 1.000000 * reactionRate); \
+break; \
+case 80: \
+reactionRate = kbinProt * Mdm2_P_Ub4 * Proteasome; \
+atomicAdd(Mdm2_P_Ub4_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Mdm2_P_Ub4_Proteasome_aux, step * 1.000000 * reactionRate); \
+break; \
+case 81: \
+reactionRate = kdegMdm2 * Mdm2_P_Ub4_Proteasome * kproteff; \
+atomicAdd(Mdm2_P_Ub4_Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, step * 1.000000 * reactionRate); \
+atomicAdd(Ub_aux, step * 4.000000 * reactionRate); \
+break; \
+case 82: \
+reactionRate = kinactATM * ATMA; \
+atomicAdd(ATMA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(ATMI_aux, step * 1.000000 * reactionRate); \
+break; \
+case 83: \
+reactionRate = kgenROSAbeta * Abeta; \
+atomicAdd(Abeta_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Abeta_aux, step * 1.000000 * reactionRate); \
+atomicAdd(ROS_aux, step * 1.000000 * reactionRate); \
+break; \
+case 84: \
+reactionRate = kgenROSPlaque * AbetaPlaque; \
+atomicAdd(AbetaPlaque_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, step * 1.000000 * reactionRate); \
+atomicAdd(ROS_aux, step * 1.000000 * reactionRate); \
+break; \
+case 85: \
+reactionRate = kgenROSAbeta * AggAbeta_Proteasome; \
+atomicAdd(AggAbeta_Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AggAbeta_Proteasome_aux, step * 1.000000 * reactionRate); \
+atomicAdd(ROS_aux, step * 1.000000 * reactionRate); \
+break; \
+case 86: \
+reactionRate = kdamROS * ROS; \
+atomicAdd(ROS_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(ROS_aux, step * 1.000000 * reactionRate); \
+atomicAdd(damDNA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 87: \
+reactionRate = ksynTau * Source; \
+atomicAdd(Tau_aux, step * 1.000000 * reactionRate); \
+break; \
+case 88: \
+reactionRate = kbinTauProt * Tau * Proteasome; \
+atomicAdd(Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_Tau_aux, step * 1.000000 * reactionRate); \
+break; \
+case 89: \
+reactionRate = kdegTau20SProt * Proteasome_Tau; \
+atomicAdd(Proteasome_Tau_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Proteasome_aux, step * 1.000000 * reactionRate); \
+break; \
+case 90: \
+reactionRate = kaggAbeta * Abeta * (Abeta - 1) * 0.5; \
+atomicAdd(Abeta_aux, - step * 2.000000 * reactionRate); \
+atomicAdd(AbetaDimer_aux, step * 1.000000 * reactionRate); \
+break; \
+case 91: \
+reactionRate = kpf * AbetaDimer * (AbetaDimer - 1) * 0.5; \
+atomicAdd(AbetaDimer_aux, - step * 2.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, step * 1.000000 * reactionRate); \
+break; \
+case 92: \
+reactionRate = kpg * AbetaDimer * pow(AbetaPlaque, 2) / (pow(kpghalf, 2) + pow(AbetaPlaque, 2)); \
+atomicAdd(AbetaDimer_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, step * 2.000000 * reactionRate); \
+break; \
+case 93: \
+reactionRate = kdisaggAbeta * AbetaDimer; \
+atomicAdd(AbetaDimer_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Abeta_aux, step * 2.000000 * reactionRate); \
+break; \
+case 94: \
+reactionRate = kdisaggAbeta1 * AbetaPlaque; \
+atomicAdd(AbetaPlaque_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaDimer_aux, step * 1.000000 * reactionRate); \
+atomicAdd(disaggPlaque1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 95: \
+reactionRate = kdisaggAbeta2 * antiAb * AbetaPlaque; \
+atomicAdd(AbetaPlaque_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaDimer_aux, step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, step * 1.000000 * reactionRate); \
+atomicAdd(disaggPlaque2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 96: \
+reactionRate = kbinAbantiAb * Abeta * antiAb; \
+atomicAdd(Abeta_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(Abeta_antiAb_aux, step * 1.000000 * reactionRate); \
+break; \
+case 97: \
+reactionRate = kbinAbantiAb * AbetaDimer * antiAb; \
+atomicAdd(AbetaDimer_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaDimer_antiAb_aux, step * 1.000000 * reactionRate); \
+break; \
+case 98: \
+reactionRate = 10 * kdegAbeta * Abeta_antiAb; \
+atomicAdd(Abeta_antiAb_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, step * 1.000000 * reactionRate); \
+break; \
+case 99: \
+reactionRate = 10 * kdegAbeta * AbetaDimer_antiAb; \
+atomicAdd(AbetaDimer_antiAb_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, step * 1.000000 * reactionRate); \
+break; \
+case 100: \
+reactionRate = kactglia1 * GliaI * AbetaPlaque; \
+atomicAdd(GliaI_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaM1_aux, step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, step * 1.000000 * reactionRate); \
+break; \
+case 101: \
+reactionRate = kactglia1 * GliaM1 * AbetaPlaque; \
+atomicAdd(GliaM1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaM2_aux, step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, step * 1.000000 * reactionRate); \
+break; \
+case 102: \
+reactionRate = kactglia2 * GliaM2 * antiAb; \
+atomicAdd(GliaM2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaA_aux, step * 1.000000 * reactionRate); \
+atomicAdd(antiAb_aux, step * 1.000000 * reactionRate); \
+break; \
+case 103: \
+reactionRate = kinactglia1 * GliaA; \
+atomicAdd(GliaA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaM2_aux, step * 1.000000 * reactionRate); \
+break; \
+case 104: \
+reactionRate = kinactglia2 * GliaM2; \
+atomicAdd(GliaM2_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaM1_aux, step * 1.000000 * reactionRate); \
+break; \
+case 105: \
+reactionRate = kinactglia2 * GliaM1; \
+atomicAdd(GliaM1_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaI_aux, step * 1.000000 * reactionRate); \
+break; \
+case 106: \
+reactionRate = kbinAbetaGlia * AbetaPlaque * GliaA; \
+atomicAdd(AbetaPlaque_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_GliaA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 107: \
+reactionRate = krelAbetaGlia * AbetaPlaque_GliaA; \
+atomicAdd(AbetaPlaque_GliaA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_aux, step * 1.000000 * reactionRate); \
+atomicAdd(GliaA_aux, step * 1.000000 * reactionRate); \
+break; \
+case 108: \
+reactionRate = kdegAbetaGlia * AbetaPlaque_GliaA; \
+atomicAdd(AbetaPlaque_GliaA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(GliaA_aux, step * 1.000000 * reactionRate); \
+atomicAdd(degAbetaGlia_aux, step * 1.000000 * reactionRate); \
+break; \
+case 109: \
+reactionRate = kgenROSGlia * AbetaPlaque_GliaA; \
+atomicAdd(AbetaPlaque_GliaA_aux, - step * 1.000000 * reactionRate); \
+atomicAdd(AbetaPlaque_GliaA_aux, step * 1.000000 * reactionRate); \
+atomicAdd(ROS_aux, step * 1.000000 * reactionRate); \
+break; \
+case 110: \
+reactionRate = kdegAntiAb * antiAb; \
+atomicAdd(antiAb_aux, - step * 1.000000 * reactionRate); \
+break; \
+case 111: \
+reactionRate = kremROS * ROS; \
+atomicAdd(ROS_aux, - step * 1.000000 * reactionRate); \
+break; \
+} \
+
+

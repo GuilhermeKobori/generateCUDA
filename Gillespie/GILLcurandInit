@@ -1,0 +1,5 @@
+
+__global__ 
+void initCurand(curandState* state, unsigned long long seed){
+curand_init(seed, threadIdx.x, 0, &state[threadIdx.x]);
+}

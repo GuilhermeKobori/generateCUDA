@@ -1,0 +1,8 @@
+
+__global__ 
+void simulate (float* output, curandState *state, float step, float endTime, float* Mdm2_aux, float* p53_aux, float* Mdm2_p53_aux, float* Mdm2_mRNA_aux, float* p53_mRNA_aux, float* ATMA_aux, float* ATMI_aux, float* p53_P_aux, float* Mdm2_P_aux, float* IR_aux, float* ROS_aux, float* damDNA_aux, float* E1_aux, float* E2_aux, float* E1_Ub_aux, float* E2_Ub_aux, float* Proteasome_aux, float* Ub_aux, float* p53DUB_aux, float* Mdm2DUB_aux, float* DUB_aux, float* Mdm2_p53_Ub_aux, float* Mdm2_p53_Ub2_aux, float* Mdm2_p53_Ub3_aux, float* Mdm2_p53_Ub4_aux, float* Mdm2_P1_p53_Ub4_aux, float* Mdm2_Ub_aux, float* Mdm2_Ub2_aux, float* Mdm2_Ub3_aux, float* Mdm2_Ub4_aux, float* Mdm2_P_Ub_aux, float* Mdm2_P_Ub2_aux, float* Mdm2_P_Ub3_aux, float* Mdm2_P_Ub4_aux, float* p53_Ub4_Proteasome_aux, float* Mdm2_Ub4_Proteasome_aux, float* Mdm2_P_Ub4_Proteasome_aux, float* GSK3b_aux, float* GSK3b_p53_aux, float* GSK3b_p53_P_aux, float* Abeta_aux, float* AggAbeta_Proteasome_aux, float* AbetaPlaque_aux, float* Tau_aux, float* Tau_P1_aux, float* Tau_P2_aux, float* MT_Tau_aux, float* AggTau_aux, float* AggTau_Proteasome_aux, float* Proteasome_Tau_aux, float* PP1_aux, float* NFT_aux, float* ATP_aux, float* ADP_aux, float* AMP_aux, float* AbetaDimer_aux, float* AbetaPlaque_GliaA_aux, float* GliaI_aux, float* GliaM1_aux, float* GliaM2_aux, float* GliaA_aux, float* antiAb_aux, float* Abeta_antiAb_aux, float* AbetaDimer_antiAb_aux, float* degAbetaGlia_aux, float* disaggPlaque1_aux, float* disaggPlaque2_aux, float* Source_aux, float* Sink_aux) {
+int reaction, stepCount = 0;
+float time = 0;
+float sum_p, sum_p_aux, timeStep, random;
+float p[112];
+int triggerEvent0 = 0;
