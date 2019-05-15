@@ -67,7 +67,3 @@ disaggPlaque1 = *disaggPlaque1_aux;
 disaggPlaque2 = *disaggPlaque2_aux;
 Source = *Source_aux;
 Sink = *Sink_aux;
-simulateStepReaction(threadIdx.x);
-__syncthreads();
-}
-}
