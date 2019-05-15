@@ -11,6 +11,8 @@
 #define SQR(x) ((x)*(x))
 #define SQRT(x) pow((x),(.5))
 
+#define SEGMENT_SIZE 1000
+
 void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	//get compartments and initial concentrations in key value pairs
 	ListOf_t* species = Model_getListOfSpecies(m);
@@ -24,6 +26,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	FILE* kernelFunction = fopen("GILLkernelFunction", "w");				//device function, loops around a simple Runge-Kutta simulation
 	FILE* kernelCall = fopen("GILLkernelCall", "w");						//declares the call for the kernel function
 	FILE* kernelVariablesInit = fopen("GILLkernelVariablesInit", "w");		//initializes the variables for the kernel function
+	FILE* kernelWriteInGlobal = fopen("GILLkernelWriteInGlobal", "w");		//writes the variables in global memory for next kernel execution
 	FILE* receiveData = fopen("GILLreceiveData", "w");						//contains code that receives data from device to host
 	FILE* freeDevice = fopen("GILLfreeDevice", "w");						//contains free declarations for the device variables
 	FILE* exportResults = fopen("GILLexportResults", "w");					//prints each species with the values received from device
@@ -55,6 +58,16 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	if (kernelCall == NULL)
 	{
 		printf("Error accessing kernelCall!");
+		exit(1);
+	}
+	if (kernelVariablesInit == NULL)
+	{
+		printf("Error accessing kernelVariablesInit!");
+		exit(1);
+	}
+	if (kernelWriteInGlobal == NULL)
+	{
+		printf("Error accessing kernelWriteInGlobal!");
 		exit(1);
 	}
 	if (receiveData == NULL)
@@ -148,7 +161,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	//get initial values and constants
 
 	fprintf(kernelFunction, "\n__global__ \n");
-	fprintf(kernelFunction, "void simulate (float* output, curandState *state, float step, float endTime");
+	fprintf(kernelFunction, "void simulate (int numberOfExecutions, float* output, curandState *state, float step, float endTime, float segmentSize");
 
 	fprintf(initializeSpecies, "cudaError_t cudaStatus;\n");
 
@@ -166,7 +179,10 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_output, output, %d*%d*sizeof(float), cudaMemcpyHostToDevice);\n", (int)ceil(endTime/step), Model_getNumSpecies(m));
 	fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
-	fprintf(kernelCall, "simulate<<<1, %d>>>(dev_output, devStates, %lf, %lf", simulations, step, endTime);
+	fprintf(kernelCall, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime / SEGMENT_SIZE));
+	//This feels weird TODO invenstigate better ways?
+	int segmentSize = SEGMENT_SIZE;
+	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %lf, %lf, %d", simulations, step, endTime, segmentSize);
 
 	fprintf(receiveData, "cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"addKernel launch failed: %%s\\n\", cudaGetErrorString(cudaStatus));goto Error;}\n\n");
 	fprintf(receiveData, "cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaDeviceSynchronize returned error code %%d after launching addKernel!\\n\", cudaStatus);goto Error;}");
@@ -187,19 +203,33 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
 		fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_%s, &%s, sizeof(float), cudaMemcpyHostToDevice);\n", Key, Key);
 		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
+		fprintf(initializeSpecies, "float* %s_global;\n", Key);
+		fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&%s_global, %d*sizeof(float));\n", Key, simulations);
+		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
 
-		fprintf(kernelFunction, ", float* %s_aux", Key);
+		fprintf(kernelFunction, ", float* %s_aux, float* %s_global", Key, Key);
 
-		fprintf(kernelCall, ", dev_%s", Key);
+		fprintf(kernelCall, ", dev_%s, %s_global", Key, Key);
 
 		fprintf(receiveData, "cudaStatus = cudaMemcpy(&%s, dev_%s, sizeof(float), cudaMemcpyDeviceToHost);\n", Key, Key);
 		fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
 		fprintf(freeDevice, "cudaFree(dev_%s);\n", Key);
+		fprintf(freeDevice, "cudaFree(%s_global);\n", Key);
 
-		fprintf(kernelVariablesInit, "float %s = *%s_aux;\n", Key, Key);
+		fprintf(kernelVariablesInit, "float %s;\n", Key);
+		fprintf(kernelVariablesInit, "if(numberOfExecutions == 0){\n");
+		fprintf(kernelVariablesInit, "%s = *%s_aux;\n", Key, Key);
+		fprintf(kernelVariablesInit, "} else {\n");
+		fprintf(kernelVariablesInit, "%s = %s_global[threadIdx.x];\n", Key, Key);
+		fprintf(kernelVariablesInit, "}\n");
+
+		fprintf(kernelWriteInGlobal, "%s_global[threadIdx.x] = %s;\n", Key, Key);
 
 	}
+
+
+	fprintf(kernelWriteInGlobal, "}\n");
 
 	fprintf(exportResults, "FILE* results = fopen(\"results.csv\", \"w\");\n");
 	fprintf(exportResults, "if(results == NULL){\n");
@@ -225,17 +255,19 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 
 	fprintf(kernelCall, ");\n\n");
+	fprintf(kernelCall, "}\n");
+
 	fprintf(receiveData, "cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"addKernel launch failed: %%s\\n\", cudaGetErrorString(cudaStatus));goto Error;}\n\n");
 	fprintf(receiveData, "cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaDeviceSynchronize returned error code %%d after launching addKernel!\\n\", cudaStatus);goto Error;}");
 
 
 	fprintf(kernelFunction, ") {\n");
 	fprintf(kernelFunction, "int reaction, stepCount = 0;\n");
-	fprintf(kernelFunction, "float time = 0;\n");
+	fprintf(kernelFunction, "float time = numberOfExecutions*segmentSize;\n");
 	fprintf(kernelFunction, "float sum_p, sum_p_aux, timeStep, random;\n");
 	fprintf(kernelFunction, "float p[%d];\n", Model_getNumReactions(m));
 
-	fprintf(kernelVariablesInit, "while(time < endTime){\n");
+	fprintf(kernelVariablesInit, "while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){\n");
 
 	fprintf(updatePropencities, "if(time >= step * stepCount){\n");
 
@@ -277,6 +309,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	for (int i = 0; i < Model_getNumEvents(m); i++) {
 		Event_t* event = ListOf_get(events, i);
 		fprintf(kernelFunction, "int triggerEvent%d = 0;\n", i);
+		fprintf(kernelFunction, "if(%s) {triggerEvent%d = 1;}\n", SBML_formulaToL3String(Trigger_getMath(Event_getTrigger(event))), i);
 		fprintf(updatePropencities, "if(triggerEvent%d == 0 && %s){\n", i, SBML_formulaToL3String(Trigger_getMath(Event_getTrigger(event))));
 		fprintf(updatePropencities, "triggerEvent%d = 1;\n", i);
 		ListOf_t* eventAssignments = Event_getListOfEventAssignments(event);
@@ -289,7 +322,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "time += timeStep;\n");
 
 
-	fprintf(updatePropencities, "}\n}\n");
+	fprintf(updatePropencities, "}\n");
 
 	for (int i = 0; i < Model_getNumCompartments(m); i++) {
 		Compartment_t* c = ListOf_get(compartments, i);

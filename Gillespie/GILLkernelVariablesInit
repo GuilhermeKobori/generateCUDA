@@ -1,70 +1,415 @@
-float Mdm2 = *Mdm2_aux;
-float p53 = *p53_aux;
-float Mdm2_p53 = *Mdm2_p53_aux;
-float Mdm2_mRNA = *Mdm2_mRNA_aux;
-float p53_mRNA = *p53_mRNA_aux;
-float ATMA = *ATMA_aux;
-float ATMI = *ATMI_aux;
-float p53_P = *p53_P_aux;
-float Mdm2_P = *Mdm2_P_aux;
-float IR = *IR_aux;
-float ROS = *ROS_aux;
-float damDNA = *damDNA_aux;
-float E1 = *E1_aux;
-float E2 = *E2_aux;
-float E1_Ub = *E1_Ub_aux;
-float E2_Ub = *E2_Ub_aux;
-float Proteasome = *Proteasome_aux;
-float Ub = *Ub_aux;
-float p53DUB = *p53DUB_aux;
-float Mdm2DUB = *Mdm2DUB_aux;
-float DUB = *DUB_aux;
-float Mdm2_p53_Ub = *Mdm2_p53_Ub_aux;
-float Mdm2_p53_Ub2 = *Mdm2_p53_Ub2_aux;
-float Mdm2_p53_Ub3 = *Mdm2_p53_Ub3_aux;
-float Mdm2_p53_Ub4 = *Mdm2_p53_Ub4_aux;
-float Mdm2_P1_p53_Ub4 = *Mdm2_P1_p53_Ub4_aux;
-float Mdm2_Ub = *Mdm2_Ub_aux;
-float Mdm2_Ub2 = *Mdm2_Ub2_aux;
-float Mdm2_Ub3 = *Mdm2_Ub3_aux;
-float Mdm2_Ub4 = *Mdm2_Ub4_aux;
-float Mdm2_P_Ub = *Mdm2_P_Ub_aux;
-float Mdm2_P_Ub2 = *Mdm2_P_Ub2_aux;
-float Mdm2_P_Ub3 = *Mdm2_P_Ub3_aux;
-float Mdm2_P_Ub4 = *Mdm2_P_Ub4_aux;
-float p53_Ub4_Proteasome = *p53_Ub4_Proteasome_aux;
-float Mdm2_Ub4_Proteasome = *Mdm2_Ub4_Proteasome_aux;
-float Mdm2_P_Ub4_Proteasome = *Mdm2_P_Ub4_Proteasome_aux;
-float GSK3b = *GSK3b_aux;
-float GSK3b_p53 = *GSK3b_p53_aux;
-float GSK3b_p53_P = *GSK3b_p53_P_aux;
-float Abeta = *Abeta_aux;
-float AggAbeta_Proteasome = *AggAbeta_Proteasome_aux;
-float AbetaPlaque = *AbetaPlaque_aux;
-float Tau = *Tau_aux;
-float Tau_P1 = *Tau_P1_aux;
-float Tau_P2 = *Tau_P2_aux;
-float MT_Tau = *MT_Tau_aux;
-float AggTau = *AggTau_aux;
-float AggTau_Proteasome = *AggTau_Proteasome_aux;
-float Proteasome_Tau = *Proteasome_Tau_aux;
-float PP1 = *PP1_aux;
-float NFT = *NFT_aux;
-float ATP = *ATP_aux;
-float ADP = *ADP_aux;
-float AMP = *AMP_aux;
-float AbetaDimer = *AbetaDimer_aux;
-float AbetaPlaque_GliaA = *AbetaPlaque_GliaA_aux;
-float GliaI = *GliaI_aux;
-float GliaM1 = *GliaM1_aux;
-float GliaM2 = *GliaM2_aux;
-float GliaA = *GliaA_aux;
-float antiAb = *antiAb_aux;
-float Abeta_antiAb = *Abeta_antiAb_aux;
-float AbetaDimer_antiAb = *AbetaDimer_antiAb_aux;
-float degAbetaGlia = *degAbetaGlia_aux;
-float disaggPlaque1 = *disaggPlaque1_aux;
-float disaggPlaque2 = *disaggPlaque2_aux;
-float Source = *Source_aux;
-float Sink = *Sink_aux;
-while(time < endTime){
+float Mdm2;
+if(numberOfExecutions == 0){
+Mdm2 = *Mdm2_aux;
+} else {
+Mdm2 = Mdm2_global[threadIdx.x];
+}
+float p53;
+if(numberOfExecutions == 0){
+p53 = *p53_aux;
+} else {
+p53 = p53_global[threadIdx.x];
+}
+float Mdm2_p53;
+if(numberOfExecutions == 0){
+Mdm2_p53 = *Mdm2_p53_aux;
+} else {
+Mdm2_p53 = Mdm2_p53_global[threadIdx.x];
+}
+float Mdm2_mRNA;
+if(numberOfExecutions == 0){
+Mdm2_mRNA = *Mdm2_mRNA_aux;
+} else {
+Mdm2_mRNA = Mdm2_mRNA_global[threadIdx.x];
+}
+float p53_mRNA;
+if(numberOfExecutions == 0){
+p53_mRNA = *p53_mRNA_aux;
+} else {
+p53_mRNA = p53_mRNA_global[threadIdx.x];
+}
+float ATMA;
+if(numberOfExecutions == 0){
+ATMA = *ATMA_aux;
+} else {
+ATMA = ATMA_global[threadIdx.x];
+}
+float ATMI;
+if(numberOfExecutions == 0){
+ATMI = *ATMI_aux;
+} else {
+ATMI = ATMI_global[threadIdx.x];
+}
+float p53_P;
+if(numberOfExecutions == 0){
+p53_P = *p53_P_aux;
+} else {
+p53_P = p53_P_global[threadIdx.x];
+}
+float Mdm2_P;
+if(numberOfExecutions == 0){
+Mdm2_P = *Mdm2_P_aux;
+} else {
+Mdm2_P = Mdm2_P_global[threadIdx.x];
+}
+float IR;
+if(numberOfExecutions == 0){
+IR = *IR_aux;
+} else {
+IR = IR_global[threadIdx.x];
+}
+float ROS;
+if(numberOfExecutions == 0){
+ROS = *ROS_aux;
+} else {
+ROS = ROS_global[threadIdx.x];
+}
+float damDNA;
+if(numberOfExecutions == 0){
+damDNA = *damDNA_aux;
+} else {
+damDNA = damDNA_global[threadIdx.x];
+}
+float E1;
+if(numberOfExecutions == 0){
+E1 = *E1_aux;
+} else {
+E1 = E1_global[threadIdx.x];
+}
+float E2;
+if(numberOfExecutions == 0){
+E2 = *E2_aux;
+} else {
+E2 = E2_global[threadIdx.x];
+}
+float E1_Ub;
+if(numberOfExecutions == 0){
+E1_Ub = *E1_Ub_aux;
+} else {
+E1_Ub = E1_Ub_global[threadIdx.x];
+}
+float E2_Ub;
+if(numberOfExecutions == 0){
+E2_Ub = *E2_Ub_aux;
+} else {
+E2_Ub = E2_Ub_global[threadIdx.x];
+}
+float Proteasome;
+if(numberOfExecutions == 0){
+Proteasome = *Proteasome_aux;
+} else {
+Proteasome = Proteasome_global[threadIdx.x];
+}
+float Ub;
+if(numberOfExecutions == 0){
+Ub = *Ub_aux;
+} else {
+Ub = Ub_global[threadIdx.x];
+}
+float p53DUB;
+if(numberOfExecutions == 0){
+p53DUB = *p53DUB_aux;
+} else {
+p53DUB = p53DUB_global[threadIdx.x];
+}
+float Mdm2DUB;
+if(numberOfExecutions == 0){
+Mdm2DUB = *Mdm2DUB_aux;
+} else {
+Mdm2DUB = Mdm2DUB_global[threadIdx.x];
+}
+float DUB;
+if(numberOfExecutions == 0){
+DUB = *DUB_aux;
+} else {
+DUB = DUB_global[threadIdx.x];
+}
+float Mdm2_p53_Ub;
+if(numberOfExecutions == 0){
+Mdm2_p53_Ub = *Mdm2_p53_Ub_aux;
+} else {
+Mdm2_p53_Ub = Mdm2_p53_Ub_global[threadIdx.x];
+}
+float Mdm2_p53_Ub2;
+if(numberOfExecutions == 0){
+Mdm2_p53_Ub2 = *Mdm2_p53_Ub2_aux;
+} else {
+Mdm2_p53_Ub2 = Mdm2_p53_Ub2_global[threadIdx.x];
+}
+float Mdm2_p53_Ub3;
+if(numberOfExecutions == 0){
+Mdm2_p53_Ub3 = *Mdm2_p53_Ub3_aux;
+} else {
+Mdm2_p53_Ub3 = Mdm2_p53_Ub3_global[threadIdx.x];
+}
+float Mdm2_p53_Ub4;
+if(numberOfExecutions == 0){
+Mdm2_p53_Ub4 = *Mdm2_p53_Ub4_aux;
+} else {
+Mdm2_p53_Ub4 = Mdm2_p53_Ub4_global[threadIdx.x];
+}
+float Mdm2_P1_p53_Ub4;
+if(numberOfExecutions == 0){
+Mdm2_P1_p53_Ub4 = *Mdm2_P1_p53_Ub4_aux;
+} else {
+Mdm2_P1_p53_Ub4 = Mdm2_P1_p53_Ub4_global[threadIdx.x];
+}
+float Mdm2_Ub;
+if(numberOfExecutions == 0){
+Mdm2_Ub = *Mdm2_Ub_aux;
+} else {
+Mdm2_Ub = Mdm2_Ub_global[threadIdx.x];
+}
+float Mdm2_Ub2;
+if(numberOfExecutions == 0){
+Mdm2_Ub2 = *Mdm2_Ub2_aux;
+} else {
+Mdm2_Ub2 = Mdm2_Ub2_global[threadIdx.x];
+}
+float Mdm2_Ub3;
+if(numberOfExecutions == 0){
+Mdm2_Ub3 = *Mdm2_Ub3_aux;
+} else {
+Mdm2_Ub3 = Mdm2_Ub3_global[threadIdx.x];
+}
+float Mdm2_Ub4;
+if(numberOfExecutions == 0){
+Mdm2_Ub4 = *Mdm2_Ub4_aux;
+} else {
+Mdm2_Ub4 = Mdm2_Ub4_global[threadIdx.x];
+}
+float Mdm2_P_Ub;
+if(numberOfExecutions == 0){
+Mdm2_P_Ub = *Mdm2_P_Ub_aux;
+} else {
+Mdm2_P_Ub = Mdm2_P_Ub_global[threadIdx.x];
+}
+float Mdm2_P_Ub2;
+if(numberOfExecutions == 0){
+Mdm2_P_Ub2 = *Mdm2_P_Ub2_aux;
+} else {
+Mdm2_P_Ub2 = Mdm2_P_Ub2_global[threadIdx.x];
+}
+float Mdm2_P_Ub3;
+if(numberOfExecutions == 0){
+Mdm2_P_Ub3 = *Mdm2_P_Ub3_aux;
+} else {
+Mdm2_P_Ub3 = Mdm2_P_Ub3_global[threadIdx.x];
+}
+float Mdm2_P_Ub4;
+if(numberOfExecutions == 0){
+Mdm2_P_Ub4 = *Mdm2_P_Ub4_aux;
+} else {
+Mdm2_P_Ub4 = Mdm2_P_Ub4_global[threadIdx.x];
+}
+float p53_Ub4_Proteasome;
+if(numberOfExecutions == 0){
+p53_Ub4_Proteasome = *p53_Ub4_Proteasome_aux;
+} else {
+p53_Ub4_Proteasome = p53_Ub4_Proteasome_global[threadIdx.x];
+}
+float Mdm2_Ub4_Proteasome;
+if(numberOfExecutions == 0){
+Mdm2_Ub4_Proteasome = *Mdm2_Ub4_Proteasome_aux;
+} else {
+Mdm2_Ub4_Proteasome = Mdm2_Ub4_Proteasome_global[threadIdx.x];
+}
+float Mdm2_P_Ub4_Proteasome;
+if(numberOfExecutions == 0){
+Mdm2_P_Ub4_Proteasome = *Mdm2_P_Ub4_Proteasome_aux;
+} else {
+Mdm2_P_Ub4_Proteasome = Mdm2_P_Ub4_Proteasome_global[threadIdx.x];
+}
+float GSK3b;
+if(numberOfExecutions == 0){
+GSK3b = *GSK3b_aux;
+} else {
+GSK3b = GSK3b_global[threadIdx.x];
+}
+float GSK3b_p53;
+if(numberOfExecutions == 0){
+GSK3b_p53 = *GSK3b_p53_aux;
+} else {
+GSK3b_p53 = GSK3b_p53_global[threadIdx.x];
+}
+float GSK3b_p53_P;
+if(numberOfExecutions == 0){
+GSK3b_p53_P = *GSK3b_p53_P_aux;
+} else {
+GSK3b_p53_P = GSK3b_p53_P_global[threadIdx.x];
+}
+float Abeta;
+if(numberOfExecutions == 0){
+Abeta = *Abeta_aux;
+} else {
+Abeta = Abeta_global[threadIdx.x];
+}
+float AggAbeta_Proteasome;
+if(numberOfExecutions == 0){
+AggAbeta_Proteasome = *AggAbeta_Proteasome_aux;
+} else {
+AggAbeta_Proteasome = AggAbeta_Proteasome_global[threadIdx.x];
+}
+float AbetaPlaque;
+if(numberOfExecutions == 0){
+AbetaPlaque = *AbetaPlaque_aux;
+} else {
+AbetaPlaque = AbetaPlaque_global[threadIdx.x];
+}
+float Tau;
+if(numberOfExecutions == 0){
+Tau = *Tau_aux;
+} else {
+Tau = Tau_global[threadIdx.x];
+}
+float Tau_P1;
+if(numberOfExecutions == 0){
+Tau_P1 = *Tau_P1_aux;
+} else {
+Tau_P1 = Tau_P1_global[threadIdx.x];
+}
+float Tau_P2;
+if(numberOfExecutions == 0){
+Tau_P2 = *Tau_P2_aux;
+} else {
+Tau_P2 = Tau_P2_global[threadIdx.x];
+}
+float MT_Tau;
+if(numberOfExecutions == 0){
+MT_Tau = *MT_Tau_aux;
+} else {
+MT_Tau = MT_Tau_global[threadIdx.x];
+}
+float AggTau;
+if(numberOfExecutions == 0){
+AggTau = *AggTau_aux;
+} else {
+AggTau = AggTau_global[threadIdx.x];
+}
+float AggTau_Proteasome;
+if(numberOfExecutions == 0){
+AggTau_Proteasome = *AggTau_Proteasome_aux;
+} else {
+AggTau_Proteasome = AggTau_Proteasome_global[threadIdx.x];
+}
+float Proteasome_Tau;
+if(numberOfExecutions == 0){
+Proteasome_Tau = *Proteasome_Tau_aux;
+} else {
+Proteasome_Tau = Proteasome_Tau_global[threadIdx.x];
+}
+float PP1;
+if(numberOfExecutions == 0){
+PP1 = *PP1_aux;
+} else {
+PP1 = PP1_global[threadIdx.x];
+}
+float NFT;
+if(numberOfExecutions == 0){
+NFT = *NFT_aux;
+} else {
+NFT = NFT_global[threadIdx.x];
+}
+float ATP;
+if(numberOfExecutions == 0){
+ATP = *ATP_aux;
+} else {
+ATP = ATP_global[threadIdx.x];
+}
+float ADP;
+if(numberOfExecutions == 0){
+ADP = *ADP_aux;
+} else {
+ADP = ADP_global[threadIdx.x];
+}
+float AMP;
+if(numberOfExecutions == 0){
+AMP = *AMP_aux;
+} else {
+AMP = AMP_global[threadIdx.x];
+}
+float AbetaDimer;
+if(numberOfExecutions == 0){
+AbetaDimer = *AbetaDimer_aux;
+} else {
+AbetaDimer = AbetaDimer_global[threadIdx.x];
+}
+float AbetaPlaque_GliaA;
+if(numberOfExecutions == 0){
+AbetaPlaque_GliaA = *AbetaPlaque_GliaA_aux;
+} else {
+AbetaPlaque_GliaA = AbetaPlaque_GliaA_global[threadIdx.x];
+}
+float GliaI;
+if(numberOfExecutions == 0){
+GliaI = *GliaI_aux;
+} else {
+GliaI = GliaI_global[threadIdx.x];
+}
+float GliaM1;
+if(numberOfExecutions == 0){
+GliaM1 = *GliaM1_aux;
+} else {
+GliaM1 = GliaM1_global[threadIdx.x];
+}
+float GliaM2;
+if(numberOfExecutions == 0){
+GliaM2 = *GliaM2_aux;
+} else {
+GliaM2 = GliaM2_global[threadIdx.x];
+}
+float GliaA;
+if(numberOfExecutions == 0){
+GliaA = *GliaA_aux;
+} else {
+GliaA = GliaA_global[threadIdx.x];
+}
+float antiAb;
+if(numberOfExecutions == 0){
+antiAb = *antiAb_aux;
+} else {
+antiAb = antiAb_global[threadIdx.x];
+}
+float Abeta_antiAb;
+if(numberOfExecutions == 0){
+Abeta_antiAb = *Abeta_antiAb_aux;
+} else {
+Abeta_antiAb = Abeta_antiAb_global[threadIdx.x];
+}
+float AbetaDimer_antiAb;
+if(numberOfExecutions == 0){
+AbetaDimer_antiAb = *AbetaDimer_antiAb_aux;
+} else {
+AbetaDimer_antiAb = AbetaDimer_antiAb_global[threadIdx.x];
+}
+float degAbetaGlia;
+if(numberOfExecutions == 0){
+degAbetaGlia = *degAbetaGlia_aux;
+} else {
+degAbetaGlia = degAbetaGlia_global[threadIdx.x];
+}
+float disaggPlaque1;
+if(numberOfExecutions == 0){
+disaggPlaque1 = *disaggPlaque1_aux;
+} else {
+disaggPlaque1 = disaggPlaque1_global[threadIdx.x];
+}
+float disaggPlaque2;
+if(numberOfExecutions == 0){
+disaggPlaque2 = *disaggPlaque2_aux;
+} else {
+disaggPlaque2 = disaggPlaque2_global[threadIdx.x];
+}
+float Source;
+if(numberOfExecutions == 0){
+Source = *Source_aux;
+} else {
+Source = Source_global[threadIdx.x];
+}
+float Sink;
+if(numberOfExecutions == 0){
+Sink = *Sink_aux;
+} else {
+Sink = Sink_global[threadIdx.x];
+}
+while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){
