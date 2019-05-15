@@ -198,7 +198,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		Key = Species_getId(s);
 		Value = Species_getInitialAmount(s);
 		fprintf(initializeSpecies, "float %s = %lf;\n", Key, Value);
-		fprintf(initializeSpecies, "float* dev_%s = 0;\n", Key);
+		fprintf(initializeSpecies, "float* dev_%s;\n", Key);
 		fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&dev_%s, sizeof(float));\n", Key);
 		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
 		fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_%s, &%s, sizeof(float), cudaMemcpyHostToDevice);\n", Key, Key);
