@@ -200,9 +200,6 @@ void generateCUDA(Model_t* m, double step, int simulations, int logPeriod) {
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 
 	fprintf(kernelCall, ");\n\n");
-	fprintf(receiveData, "cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"addKernel launch failed: %%s\\n\", cudaGetErrorString(cudaStatus));goto Error;}\n\n");
-	fprintf(receiveData, "cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaDeviceSynchronize returned error code %%d after launching addKernel!\\n\", cudaStatus);goto Error;}");
-
 
 	fprintf(kernelFunction, ") {\n");
 	fprintf(kernelFunction, "float reactionRate;\n");
