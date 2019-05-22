@@ -255,6 +255,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 
 	fprintf(kernelCall, ");\n\n");
+	fprintf(kernelCall, "cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaDeviceSynchronize returned error code %%d after launching addKernel!\\n\", cudaStatus);goto Error;}");
 	fprintf(kernelCall, "}\n");
 
 	fprintf(kernelFunction, ") {\n");
@@ -265,10 +266,10 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 	fprintf(kernelVariablesInit, "while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){\n");
 
-	fprintf(updatePropencities, "if(time >= step * stepCount){\n");
+	fprintf(updatePropencities, "if(time >= segmentSize * numberOfExecutions + step * stepCount){\n");
 
 	for (int i = 0; i < Model_getNumSpecies(m); i++) {
-		fprintf(updatePropencities, "atomicAdd(&output[stepCount*%d + %d], %s);\n", Model_getNumSpecies(m), i, Species_getId(ListOf_get(species, i)));
+		fprintf(updatePropencities, "atomicAdd(&output[%d*%d*numberOfExecutions + stepCount*%d + %d], %s);\n", Model_getNumSpecies(m), (int)ceil(segmentSize/step), Model_getNumSpecies(m), i, Species_getId(ListOf_get(species, i)));
 	}
 
 	fprintf(updatePropencities, "stepCount++;\n");
