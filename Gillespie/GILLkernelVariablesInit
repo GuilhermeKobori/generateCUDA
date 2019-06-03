@@ -1,415 +1,346 @@
-float Mdm2;
+float species[69];
 if(numberOfExecutions == 0){
-Mdm2 = *Mdm2_aux;
+species[0] = *Mdm2_aux;
 } else {
-Mdm2 = Mdm2_global[threadIdx.x];
+species[0] = Mdm2_global[threadIdx.x];
 }
-float p53;
 if(numberOfExecutions == 0){
-p53 = *p53_aux;
+species[1] = *p53_aux;
 } else {
-p53 = p53_global[threadIdx.x];
+species[1] = p53_global[threadIdx.x];
 }
-float Mdm2_p53;
 if(numberOfExecutions == 0){
-Mdm2_p53 = *Mdm2_p53_aux;
+species[2] = *Mdm2_p53_aux;
 } else {
-Mdm2_p53 = Mdm2_p53_global[threadIdx.x];
+species[2] = Mdm2_p53_global[threadIdx.x];
 }
-float Mdm2_mRNA;
 if(numberOfExecutions == 0){
-Mdm2_mRNA = *Mdm2_mRNA_aux;
+species[3] = *Mdm2_mRNA_aux;
 } else {
-Mdm2_mRNA = Mdm2_mRNA_global[threadIdx.x];
+species[3] = Mdm2_mRNA_global[threadIdx.x];
 }
-float p53_mRNA;
 if(numberOfExecutions == 0){
-p53_mRNA = *p53_mRNA_aux;
+species[4] = *p53_mRNA_aux;
 } else {
-p53_mRNA = p53_mRNA_global[threadIdx.x];
+species[4] = p53_mRNA_global[threadIdx.x];
 }
-float ATMA;
 if(numberOfExecutions == 0){
-ATMA = *ATMA_aux;
+species[5] = *ATMA_aux;
 } else {
-ATMA = ATMA_global[threadIdx.x];
+species[5] = ATMA_global[threadIdx.x];
 }
-float ATMI;
 if(numberOfExecutions == 0){
-ATMI = *ATMI_aux;
+species[6] = *ATMI_aux;
 } else {
-ATMI = ATMI_global[threadIdx.x];
+species[6] = ATMI_global[threadIdx.x];
 }
-float p53_P;
 if(numberOfExecutions == 0){
-p53_P = *p53_P_aux;
+species[7] = *p53_P_aux;
 } else {
-p53_P = p53_P_global[threadIdx.x];
+species[7] = p53_P_global[threadIdx.x];
 }
-float Mdm2_P;
 if(numberOfExecutions == 0){
-Mdm2_P = *Mdm2_P_aux;
+species[8] = *Mdm2_P_aux;
 } else {
-Mdm2_P = Mdm2_P_global[threadIdx.x];
+species[8] = Mdm2_P_global[threadIdx.x];
 }
-float IR;
 if(numberOfExecutions == 0){
-IR = *IR_aux;
+species[9] = *IR_aux;
 } else {
-IR = IR_global[threadIdx.x];
+species[9] = IR_global[threadIdx.x];
 }
-float ROS;
 if(numberOfExecutions == 0){
-ROS = *ROS_aux;
+species[10] = *ROS_aux;
 } else {
-ROS = ROS_global[threadIdx.x];
+species[10] = ROS_global[threadIdx.x];
 }
-float damDNA;
 if(numberOfExecutions == 0){
-damDNA = *damDNA_aux;
+species[11] = *damDNA_aux;
 } else {
-damDNA = damDNA_global[threadIdx.x];
+species[11] = damDNA_global[threadIdx.x];
 }
-float E1;
 if(numberOfExecutions == 0){
-E1 = *E1_aux;
+species[12] = *E1_aux;
 } else {
-E1 = E1_global[threadIdx.x];
+species[12] = E1_global[threadIdx.x];
 }
-float E2;
 if(numberOfExecutions == 0){
-E2 = *E2_aux;
+species[13] = *E2_aux;
 } else {
-E2 = E2_global[threadIdx.x];
+species[13] = E2_global[threadIdx.x];
 }
-float E1_Ub;
 if(numberOfExecutions == 0){
-E1_Ub = *E1_Ub_aux;
+species[14] = *E1_Ub_aux;
 } else {
-E1_Ub = E1_Ub_global[threadIdx.x];
+species[14] = E1_Ub_global[threadIdx.x];
 }
-float E2_Ub;
 if(numberOfExecutions == 0){
-E2_Ub = *E2_Ub_aux;
+species[15] = *E2_Ub_aux;
 } else {
-E2_Ub = E2_Ub_global[threadIdx.x];
+species[15] = E2_Ub_global[threadIdx.x];
 }
-float Proteasome;
 if(numberOfExecutions == 0){
-Proteasome = *Proteasome_aux;
+species[16] = *Proteasome_aux;
 } else {
-Proteasome = Proteasome_global[threadIdx.x];
+species[16] = Proteasome_global[threadIdx.x];
 }
-float Ub;
 if(numberOfExecutions == 0){
-Ub = *Ub_aux;
+species[17] = *Ub_aux;
 } else {
-Ub = Ub_global[threadIdx.x];
+species[17] = Ub_global[threadIdx.x];
 }
-float p53DUB;
 if(numberOfExecutions == 0){
-p53DUB = *p53DUB_aux;
+species[18] = *p53DUB_aux;
 } else {
-p53DUB = p53DUB_global[threadIdx.x];
+species[18] = p53DUB_global[threadIdx.x];
 }
-float Mdm2DUB;
 if(numberOfExecutions == 0){
-Mdm2DUB = *Mdm2DUB_aux;
+species[19] = *Mdm2DUB_aux;
 } else {
-Mdm2DUB = Mdm2DUB_global[threadIdx.x];
+species[19] = Mdm2DUB_global[threadIdx.x];
 }
-float DUB;
 if(numberOfExecutions == 0){
-DUB = *DUB_aux;
+species[20] = *DUB_aux;
 } else {
-DUB = DUB_global[threadIdx.x];
+species[20] = DUB_global[threadIdx.x];
 }
-float Mdm2_p53_Ub;
 if(numberOfExecutions == 0){
-Mdm2_p53_Ub = *Mdm2_p53_Ub_aux;
+species[21] = *Mdm2_p53_Ub_aux;
 } else {
-Mdm2_p53_Ub = Mdm2_p53_Ub_global[threadIdx.x];
+species[21] = Mdm2_p53_Ub_global[threadIdx.x];
 }
-float Mdm2_p53_Ub2;
 if(numberOfExecutions == 0){
-Mdm2_p53_Ub2 = *Mdm2_p53_Ub2_aux;
+species[22] = *Mdm2_p53_Ub2_aux;
 } else {
-Mdm2_p53_Ub2 = Mdm2_p53_Ub2_global[threadIdx.x];
+species[22] = Mdm2_p53_Ub2_global[threadIdx.x];
 }
-float Mdm2_p53_Ub3;
 if(numberOfExecutions == 0){
-Mdm2_p53_Ub3 = *Mdm2_p53_Ub3_aux;
+species[23] = *Mdm2_p53_Ub3_aux;
 } else {
-Mdm2_p53_Ub3 = Mdm2_p53_Ub3_global[threadIdx.x];
+species[23] = Mdm2_p53_Ub3_global[threadIdx.x];
 }
-float Mdm2_p53_Ub4;
 if(numberOfExecutions == 0){
-Mdm2_p53_Ub4 = *Mdm2_p53_Ub4_aux;
+species[24] = *Mdm2_p53_Ub4_aux;
 } else {
-Mdm2_p53_Ub4 = Mdm2_p53_Ub4_global[threadIdx.x];
+species[24] = Mdm2_p53_Ub4_global[threadIdx.x];
 }
-float Mdm2_P1_p53_Ub4;
 if(numberOfExecutions == 0){
-Mdm2_P1_p53_Ub4 = *Mdm2_P1_p53_Ub4_aux;
+species[25] = *Mdm2_P1_p53_Ub4_aux;
 } else {
-Mdm2_P1_p53_Ub4 = Mdm2_P1_p53_Ub4_global[threadIdx.x];
+species[25] = Mdm2_P1_p53_Ub4_global[threadIdx.x];
 }
-float Mdm2_Ub;
 if(numberOfExecutions == 0){
-Mdm2_Ub = *Mdm2_Ub_aux;
+species[26] = *Mdm2_Ub_aux;
 } else {
-Mdm2_Ub = Mdm2_Ub_global[threadIdx.x];
+species[26] = Mdm2_Ub_global[threadIdx.x];
 }
-float Mdm2_Ub2;
 if(numberOfExecutions == 0){
-Mdm2_Ub2 = *Mdm2_Ub2_aux;
+species[27] = *Mdm2_Ub2_aux;
 } else {
-Mdm2_Ub2 = Mdm2_Ub2_global[threadIdx.x];
+species[27] = Mdm2_Ub2_global[threadIdx.x];
 }
-float Mdm2_Ub3;
 if(numberOfExecutions == 0){
-Mdm2_Ub3 = *Mdm2_Ub3_aux;
+species[28] = *Mdm2_Ub3_aux;
 } else {
-Mdm2_Ub3 = Mdm2_Ub3_global[threadIdx.x];
+species[28] = Mdm2_Ub3_global[threadIdx.x];
 }
-float Mdm2_Ub4;
 if(numberOfExecutions == 0){
-Mdm2_Ub4 = *Mdm2_Ub4_aux;
+species[29] = *Mdm2_Ub4_aux;
 } else {
-Mdm2_Ub4 = Mdm2_Ub4_global[threadIdx.x];
+species[29] = Mdm2_Ub4_global[threadIdx.x];
 }
-float Mdm2_P_Ub;
 if(numberOfExecutions == 0){
-Mdm2_P_Ub = *Mdm2_P_Ub_aux;
+species[30] = *Mdm2_P_Ub_aux;
 } else {
-Mdm2_P_Ub = Mdm2_P_Ub_global[threadIdx.x];
+species[30] = Mdm2_P_Ub_global[threadIdx.x];
 }
-float Mdm2_P_Ub2;
 if(numberOfExecutions == 0){
-Mdm2_P_Ub2 = *Mdm2_P_Ub2_aux;
+species[31] = *Mdm2_P_Ub2_aux;
 } else {
-Mdm2_P_Ub2 = Mdm2_P_Ub2_global[threadIdx.x];
+species[31] = Mdm2_P_Ub2_global[threadIdx.x];
 }
-float Mdm2_P_Ub3;
 if(numberOfExecutions == 0){
-Mdm2_P_Ub3 = *Mdm2_P_Ub3_aux;
+species[32] = *Mdm2_P_Ub3_aux;
 } else {
-Mdm2_P_Ub3 = Mdm2_P_Ub3_global[threadIdx.x];
+species[32] = Mdm2_P_Ub3_global[threadIdx.x];
 }
-float Mdm2_P_Ub4;
 if(numberOfExecutions == 0){
-Mdm2_P_Ub4 = *Mdm2_P_Ub4_aux;
+species[33] = *Mdm2_P_Ub4_aux;
 } else {
-Mdm2_P_Ub4 = Mdm2_P_Ub4_global[threadIdx.x];
+species[33] = Mdm2_P_Ub4_global[threadIdx.x];
 }
-float p53_Ub4_Proteasome;
 if(numberOfExecutions == 0){
-p53_Ub4_Proteasome = *p53_Ub4_Proteasome_aux;
+species[34] = *p53_Ub4_Proteasome_aux;
 } else {
-p53_Ub4_Proteasome = p53_Ub4_Proteasome_global[threadIdx.x];
+species[34] = p53_Ub4_Proteasome_global[threadIdx.x];
 }
-float Mdm2_Ub4_Proteasome;
 if(numberOfExecutions == 0){
-Mdm2_Ub4_Proteasome = *Mdm2_Ub4_Proteasome_aux;
+species[35] = *Mdm2_Ub4_Proteasome_aux;
 } else {
-Mdm2_Ub4_Proteasome = Mdm2_Ub4_Proteasome_global[threadIdx.x];
+species[35] = Mdm2_Ub4_Proteasome_global[threadIdx.x];
 }
-float Mdm2_P_Ub4_Proteasome;
 if(numberOfExecutions == 0){
-Mdm2_P_Ub4_Proteasome = *Mdm2_P_Ub4_Proteasome_aux;
+species[36] = *Mdm2_P_Ub4_Proteasome_aux;
 } else {
-Mdm2_P_Ub4_Proteasome = Mdm2_P_Ub4_Proteasome_global[threadIdx.x];
+species[36] = Mdm2_P_Ub4_Proteasome_global[threadIdx.x];
 }
-float GSK3b;
 if(numberOfExecutions == 0){
-GSK3b = *GSK3b_aux;
+species[37] = *GSK3b_aux;
 } else {
-GSK3b = GSK3b_global[threadIdx.x];
+species[37] = GSK3b_global[threadIdx.x];
 }
-float GSK3b_p53;
 if(numberOfExecutions == 0){
-GSK3b_p53 = *GSK3b_p53_aux;
+species[38] = *GSK3b_p53_aux;
 } else {
-GSK3b_p53 = GSK3b_p53_global[threadIdx.x];
+species[38] = GSK3b_p53_global[threadIdx.x];
 }
-float GSK3b_p53_P;
 if(numberOfExecutions == 0){
-GSK3b_p53_P = *GSK3b_p53_P_aux;
+species[39] = *GSK3b_p53_P_aux;
 } else {
-GSK3b_p53_P = GSK3b_p53_P_global[threadIdx.x];
+species[39] = GSK3b_p53_P_global[threadIdx.x];
 }
-float Abeta;
 if(numberOfExecutions == 0){
-Abeta = *Abeta_aux;
+species[40] = *Abeta_aux;
 } else {
-Abeta = Abeta_global[threadIdx.x];
+species[40] = Abeta_global[threadIdx.x];
 }
-float AggAbeta_Proteasome;
 if(numberOfExecutions == 0){
-AggAbeta_Proteasome = *AggAbeta_Proteasome_aux;
+species[41] = *AggAbeta_Proteasome_aux;
 } else {
-AggAbeta_Proteasome = AggAbeta_Proteasome_global[threadIdx.x];
+species[41] = AggAbeta_Proteasome_global[threadIdx.x];
 }
-float AbetaPlaque;
 if(numberOfExecutions == 0){
-AbetaPlaque = *AbetaPlaque_aux;
+species[42] = *AbetaPlaque_aux;
 } else {
-AbetaPlaque = AbetaPlaque_global[threadIdx.x];
+species[42] = AbetaPlaque_global[threadIdx.x];
 }
-float Tau;
 if(numberOfExecutions == 0){
-Tau = *Tau_aux;
+species[43] = *Tau_aux;
 } else {
-Tau = Tau_global[threadIdx.x];
+species[43] = Tau_global[threadIdx.x];
 }
-float Tau_P1;
 if(numberOfExecutions == 0){
-Tau_P1 = *Tau_P1_aux;
+species[44] = *Tau_P1_aux;
 } else {
-Tau_P1 = Tau_P1_global[threadIdx.x];
+species[44] = Tau_P1_global[threadIdx.x];
 }
-float Tau_P2;
 if(numberOfExecutions == 0){
-Tau_P2 = *Tau_P2_aux;
+species[45] = *Tau_P2_aux;
 } else {
-Tau_P2 = Tau_P2_global[threadIdx.x];
+species[45] = Tau_P2_global[threadIdx.x];
 }
-float MT_Tau;
 if(numberOfExecutions == 0){
-MT_Tau = *MT_Tau_aux;
+species[46] = *MT_Tau_aux;
 } else {
-MT_Tau = MT_Tau_global[threadIdx.x];
+species[46] = MT_Tau_global[threadIdx.x];
 }
-float AggTau;
 if(numberOfExecutions == 0){
-AggTau = *AggTau_aux;
+species[47] = *AggTau_aux;
 } else {
-AggTau = AggTau_global[threadIdx.x];
+species[47] = AggTau_global[threadIdx.x];
 }
-float AggTau_Proteasome;
 if(numberOfExecutions == 0){
-AggTau_Proteasome = *AggTau_Proteasome_aux;
+species[48] = *AggTau_Proteasome_aux;
 } else {
-AggTau_Proteasome = AggTau_Proteasome_global[threadIdx.x];
+species[48] = AggTau_Proteasome_global[threadIdx.x];
 }
-float Proteasome_Tau;
 if(numberOfExecutions == 0){
-Proteasome_Tau = *Proteasome_Tau_aux;
+species[49] = *Proteasome_Tau_aux;
 } else {
-Proteasome_Tau = Proteasome_Tau_global[threadIdx.x];
+species[49] = Proteasome_Tau_global[threadIdx.x];
 }
-float PP1;
 if(numberOfExecutions == 0){
-PP1 = *PP1_aux;
+species[50] = *PP1_aux;
 } else {
-PP1 = PP1_global[threadIdx.x];
+species[50] = PP1_global[threadIdx.x];
 }
-float NFT;
 if(numberOfExecutions == 0){
-NFT = *NFT_aux;
+species[51] = *NFT_aux;
 } else {
-NFT = NFT_global[threadIdx.x];
+species[51] = NFT_global[threadIdx.x];
 }
-float ATP;
 if(numberOfExecutions == 0){
-ATP = *ATP_aux;
+species[52] = *ATP_aux;
 } else {
-ATP = ATP_global[threadIdx.x];
+species[52] = ATP_global[threadIdx.x];
 }
-float ADP;
 if(numberOfExecutions == 0){
-ADP = *ADP_aux;
+species[53] = *ADP_aux;
 } else {
-ADP = ADP_global[threadIdx.x];
+species[53] = ADP_global[threadIdx.x];
 }
-float AMP;
 if(numberOfExecutions == 0){
-AMP = *AMP_aux;
+species[54] = *AMP_aux;
 } else {
-AMP = AMP_global[threadIdx.x];
+species[54] = AMP_global[threadIdx.x];
 }
-float AbetaDimer;
 if(numberOfExecutions == 0){
-AbetaDimer = *AbetaDimer_aux;
+species[55] = *AbetaDimer_aux;
 } else {
-AbetaDimer = AbetaDimer_global[threadIdx.x];
+species[55] = AbetaDimer_global[threadIdx.x];
 }
-float AbetaPlaque_GliaA;
 if(numberOfExecutions == 0){
-AbetaPlaque_GliaA = *AbetaPlaque_GliaA_aux;
+species[56] = *AbetaPlaque_GliaA_aux;
 } else {
-AbetaPlaque_GliaA = AbetaPlaque_GliaA_global[threadIdx.x];
+species[56] = AbetaPlaque_GliaA_global[threadIdx.x];
 }
-float GliaI;
 if(numberOfExecutions == 0){
-GliaI = *GliaI_aux;
+species[57] = *GliaI_aux;
 } else {
-GliaI = GliaI_global[threadIdx.x];
+species[57] = GliaI_global[threadIdx.x];
 }
-float GliaM1;
 if(numberOfExecutions == 0){
-GliaM1 = *GliaM1_aux;
+species[58] = *GliaM1_aux;
 } else {
-GliaM1 = GliaM1_global[threadIdx.x];
+species[58] = GliaM1_global[threadIdx.x];
 }
-float GliaM2;
 if(numberOfExecutions == 0){
-GliaM2 = *GliaM2_aux;
+species[59] = *GliaM2_aux;
 } else {
-GliaM2 = GliaM2_global[threadIdx.x];
+species[59] = GliaM2_global[threadIdx.x];
 }
-float GliaA;
 if(numberOfExecutions == 0){
-GliaA = *GliaA_aux;
+species[60] = *GliaA_aux;
 } else {
-GliaA = GliaA_global[threadIdx.x];
+species[60] = GliaA_global[threadIdx.x];
 }
-float antiAb;
 if(numberOfExecutions == 0){
-antiAb = *antiAb_aux;
+species[61] = *antiAb_aux;
 } else {
-antiAb = antiAb_global[threadIdx.x];
+species[61] = antiAb_global[threadIdx.x];
 }
-float Abeta_antiAb;
 if(numberOfExecutions == 0){
-Abeta_antiAb = *Abeta_antiAb_aux;
+species[62] = *Abeta_antiAb_aux;
 } else {
-Abeta_antiAb = Abeta_antiAb_global[threadIdx.x];
+species[62] = Abeta_antiAb_global[threadIdx.x];
 }
-float AbetaDimer_antiAb;
 if(numberOfExecutions == 0){
-AbetaDimer_antiAb = *AbetaDimer_antiAb_aux;
+species[63] = *AbetaDimer_antiAb_aux;
 } else {
-AbetaDimer_antiAb = AbetaDimer_antiAb_global[threadIdx.x];
+species[63] = AbetaDimer_antiAb_global[threadIdx.x];
 }
-float degAbetaGlia;
 if(numberOfExecutions == 0){
-degAbetaGlia = *degAbetaGlia_aux;
+species[64] = *degAbetaGlia_aux;
 } else {
-degAbetaGlia = degAbetaGlia_global[threadIdx.x];
+species[64] = degAbetaGlia_global[threadIdx.x];
 }
-float disaggPlaque1;
 if(numberOfExecutions == 0){
-disaggPlaque1 = *disaggPlaque1_aux;
+species[65] = *disaggPlaque1_aux;
 } else {
-disaggPlaque1 = disaggPlaque1_global[threadIdx.x];
+species[65] = disaggPlaque1_global[threadIdx.x];
 }
-float disaggPlaque2;
 if(numberOfExecutions == 0){
-disaggPlaque2 = *disaggPlaque2_aux;
+species[66] = *disaggPlaque2_aux;
 } else {
-disaggPlaque2 = disaggPlaque2_global[threadIdx.x];
+species[66] = disaggPlaque2_global[threadIdx.x];
 }
-float Source;
 if(numberOfExecutions == 0){
-Source = *Source_aux;
+species[67] = *Source_aux;
 } else {
-Source = Source_global[threadIdx.x];
+species[67] = Source_global[threadIdx.x];
 }
-float Sink;
 if(numberOfExecutions == 0){
-Sink = *Sink_aux;
+species[68] = *Sink_aux;
 } else {
-Sink = Sink_global[threadIdx.x];
+species[68] = Sink_global[threadIdx.x];
 }
-while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){

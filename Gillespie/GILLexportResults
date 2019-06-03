@@ -74,10 +74,10 @@ fprintf(results, ", disaggPlaque2");
 fprintf(results, ", Source");
 fprintf(results, ", Sink");
 fprintf(results, "\n");
-for(int i = 0; i < 34; i++){
-fprintf(results, "%lf", 60.000000*i);
+for(int i = 0; i < 6667; i++){
+fprintf(results, "%.10lf", 60.0000000000*i);
 for(int j = 0; j < 69; j++){
-fprintf(results, ", %lf", output[69*i+j]/32);
+fprintf(results, ", %.10lf", output[69*i+j]/32);
 }
 fprintf(results, "\n");
 }

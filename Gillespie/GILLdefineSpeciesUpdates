@@ -1,584 +1,723 @@
-#define speciesUpdate(i) \
-switch (i) { \
-case 0: \
-p53_mRNA += 1.000000; \
-break; \
-case 1: \
-p53_mRNA -= 1.000000; \
-break; \
-case 2: \
-Mdm2_mRNA -= 1.000000; \
-Mdm2_mRNA += 1.000000; \
-Mdm2 += 1.000000; \
-break; \
-case 3: \
-p53 -= 1.000000; \
-p53 += 1.000000; \
-Mdm2_mRNA += 1.000000; \
-break; \
-case 4: \
-p53_P -= 1.000000; \
-p53_P += 1.000000; \
-Mdm2_mRNA += 1.000000; \
-break; \
-case 5: \
-GSK3b_p53 -= 1.000000; \
-GSK3b_p53 += 1.000000; \
-Mdm2_mRNA += 1.000000; \
-break; \
-case 6: \
-GSK3b_p53_P -= 1.000000; \
-GSK3b_p53_P += 1.000000; \
-Mdm2_mRNA += 1.000000; \
-break; \
-case 7: \
-Mdm2_mRNA -= 1.000000; \
-break; \
-case 8: \
-p53 -= 1.000000; \
-Mdm2 -= 1.000000; \
-Mdm2_p53 += 1.000000; \
-break; \
-case 9: \
-Mdm2_p53 -= 1.000000; \
-p53 += 1.000000; \
-Mdm2 += 1.000000; \
-break; \
-case 10: \
-GSK3b -= 1.000000; \
-p53 -= 1.000000; \
-GSK3b_p53 += 1.000000; \
-break; \
-case 11: \
-GSK3b_p53 -= 1.000000; \
-GSK3b += 1.000000; \
-p53 += 1.000000; \
-break; \
-case 12: \
-GSK3b -= 1.000000; \
-p53_P -= 1.000000; \
-GSK3b_p53_P += 1.000000; \
-break; \
-case 13: \
-GSK3b_p53_P -= 1.000000; \
-GSK3b += 1.000000; \
-p53_P += 1.000000; \
-break; \
-case 14: \
-E1 -= 1.000000; \
-Ub -= 1.000000; \
-E1_Ub += 1.000000; \
-break; \
-case 15: \
-E2 -= 1.000000; \
-E1_Ub -= 1.000000; \
-E2_Ub += 1.000000; \
-E1 += 1.000000; \
-break; \
-case 16: \
-Mdm2 -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_Ub += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 17: \
-Mdm2_Ub -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_Ub2 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 18: \
-Mdm2_Ub2 -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_Ub3 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 19: \
-Mdm2_Ub3 -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_Ub4 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 20: \
-Mdm2_Ub4 -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2_Ub3 += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 21: \
-Mdm2_Ub3 -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2_Ub2 += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 22: \
-Mdm2_Ub2 -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2_Ub += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 23: \
-Mdm2_Ub -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2 += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 24: \
-Mdm2_Ub4 -= 1.000000; \
-Proteasome -= 1.000000; \
-Mdm2_Ub4_Proteasome += 1.000000; \
-break; \
-case 25: \
-Mdm2_Ub4_Proteasome -= 1.000000; \
-Proteasome += 1.000000; \
-Ub += 4.000000; \
-break; \
-case 26: \
-p53_mRNA -= 1.000000; \
-p53 += 1.000000; \
-p53_mRNA += 1.000000; \
-break; \
-case 27: \
-E2_Ub -= 1.000000; \
-Mdm2_p53 -= 1.000000; \
-Mdm2_p53_Ub += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 28: \
-Mdm2_p53_Ub -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_p53_Ub2 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 29: \
-Mdm2_p53_Ub2 -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_p53_Ub3 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 30: \
-Mdm2_p53_Ub3 -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_p53_Ub4 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 31: \
-Mdm2_p53_Ub4 -= 1.000000; \
-p53DUB -= 1.000000; \
-Mdm2_p53_Ub3 += 1.000000; \
-p53DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 32: \
-Mdm2_p53_Ub3 -= 1.000000; \
-p53DUB -= 1.000000; \
-Mdm2_p53_Ub2 += 1.000000; \
-p53DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 33: \
-Mdm2_p53_Ub2 -= 1.000000; \
-p53DUB -= 1.000000; \
-Mdm2_p53_Ub += 1.000000; \
-p53DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 34: \
-Mdm2_p53_Ub -= 1.000000; \
-p53DUB -= 1.000000; \
-Mdm2_p53 += 1.000000; \
-p53DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 35: \
-Mdm2_p53_Ub4 -= 1.000000; \
-GSK3b -= 1.000000; \
-Mdm2_P1_p53_Ub4 += 1.000000; \
-GSK3b += 1.000000; \
-break; \
-case 36: \
-Mdm2_p53_Ub4 -= 1.000000; \
-GSK3b_p53 -= 1.000000; \
-Mdm2_P1_p53_Ub4 += 1.000000; \
-GSK3b_p53 += 1.000000; \
-break; \
-case 37: \
-Mdm2_p53_Ub4 -= 1.000000; \
-GSK3b_p53_P -= 1.000000; \
-Mdm2_P1_p53_Ub4 += 1.000000; \
-GSK3b_p53_P += 1.000000; \
-break; \
-case 38: \
-Mdm2_P1_p53_Ub4 -= 1.000000; \
-Proteasome -= 1.000000; \
-p53_Ub4_Proteasome += 1.000000; \
-Mdm2 += 1.000000; \
-break; \
-case 39: \
-p53_Ub4_Proteasome -= 1.000000; \
-Ub += 4.000000; \
-Proteasome += 1.000000; \
-break; \
-case 40: \
-Tau -= 1.000000; \
-MT_Tau += 1.000000; \
-break; \
-case 41: \
-MT_Tau -= 1.000000; \
-Tau += 1.000000; \
-break; \
-case 42: \
-GSK3b_p53 -= 1.000000; \
-Tau -= 1.000000; \
-GSK3b_p53 += 1.000000; \
-Tau_P1 += 1.000000; \
-break; \
-case 43: \
-GSK3b_p53 -= 1.000000; \
-Tau_P1 -= 1.000000; \
-GSK3b_p53 += 1.000000; \
-Tau_P2 += 1.000000; \
-break; \
-case 44: \
-GSK3b_p53_P -= 1.000000; \
-Tau -= 1.000000; \
-GSK3b_p53_P += 1.000000; \
-Tau_P1 += 1.000000; \
-break; \
-case 45: \
-GSK3b_p53_P -= 1.000000; \
-Tau_P1 -= 1.000000; \
-GSK3b_p53_P += 1.000000; \
-Tau_P2 += 1.000000; \
-break; \
-case 46: \
-GSK3b -= 1.000000; \
-Tau -= 1.000000; \
-GSK3b += 1.000000; \
-Tau_P1 += 1.000000; \
-break; \
-case 47: \
-GSK3b -= 1.000000; \
-Tau_P1 -= 1.000000; \
-GSK3b += 1.000000; \
-Tau_P2 += 1.000000; \
-break; \
-case 48: \
-Tau_P2 -= 1.000000; \
-PP1 -= 1.000000; \
-Tau_P1 += 1.000000; \
-PP1 += 1.000000; \
-break; \
-case 49: \
-Tau_P1 -= 1.000000; \
-PP1 -= 1.000000; \
-Tau += 1.000000; \
-PP1 += 1.000000; \
-break; \
-case 50: \
-Tau_P1 -= 2.000000; \
-AggTau += 2.000000; \
-break; \
-case 51: \
-Tau_P1 -= 1.000000; \
-AggTau -= 1.000000; \
-AggTau += 2.000000; \
-break; \
-case 52: \
-Tau_P2 -= 2.000000; \
-AggTau += 2.000000; \
-break; \
-case 53: \
-Tau_P2 -= 1.000000; \
-AggTau -= 1.000000; \
-AggTau += 2.000000; \
-break; \
-case 54: \
-Tau -= 2.000000; \
-AggTau += 2.000000; \
-break; \
-case 55: \
-Tau -= 1.000000; \
-AggTau -= 1.000000; \
-AggTau += 2.000000; \
-break; \
-case 56: \
-AggTau -= 2.000000; \
-NFT += 2.000000; \
-break; \
-case 57: \
-AggTau -= 1.000000; \
-NFT -= 1.000000; \
-NFT += 2.000000; \
-break; \
-case 58: \
-AggTau -= 1.000000; \
-Proteasome -= 1.000000; \
-AggTau_Proteasome += 1.000000; \
-break; \
-case 59: \
-Abeta += 1.000000; \
-break; \
-case 60: \
-GSK3b_p53 -= 1.000000; \
-Abeta += 1.000000; \
-GSK3b_p53 += 1.000000; \
-break; \
-case 61: \
-GSK3b_p53_P -= 1.000000; \
-Abeta += 1.000000; \
-GSK3b_p53_P += 1.000000; \
-break; \
-case 62: \
-AbetaDimer -= 1.000000; \
-Proteasome -= 1.000000; \
-AggAbeta_Proteasome += 1.000000; \
-break; \
-case 63: \
-Abeta -= 1.000000; \
-break; \
-case 64: \
-Abeta -= 1.000000; \
-p53_mRNA += 1.000000; \
-Abeta += 1.000000; \
-break; \
-case 65: \
-IR -= 1.000000; \
-IR += 1.000000; \
-damDNA += 1.000000; \
-break; \
-case 66: \
-damDNA -= 1.000000; \
-break; \
-case 67: \
-damDNA -= 1.000000; \
-ATMI -= 1.000000; \
-damDNA += 1.000000; \
-ATMA += 1.000000; \
-break; \
-case 68: \
-p53 -= 1.000000; \
-ATMA -= 1.000000; \
-p53_P += 1.000000; \
-ATMA += 1.000000; \
-break; \
-case 69: \
-p53_P -= 1.000000; \
-p53 += 1.000000; \
-break; \
-case 70: \
-Mdm2 -= 1.000000; \
-ATMA -= 1.000000; \
-Mdm2_P += 1.000000; \
-ATMA += 1.000000; \
-break; \
-case 71: \
-Mdm2_P -= 1.000000; \
-Mdm2 += 1.000000; \
-break; \
-case 72: \
-Mdm2_P -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_P_Ub += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 73: \
-Mdm2_P_Ub -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_P_Ub2 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 74: \
-Mdm2_P_Ub2 -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_P_Ub3 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 75: \
-Mdm2_P_Ub3 -= 1.000000; \
-E2_Ub -= 1.000000; \
-Mdm2_P_Ub4 += 1.000000; \
-E2 += 1.000000; \
-break; \
-case 76: \
-Mdm2_P_Ub4 -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2_P_Ub3 += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 77: \
-Mdm2_P_Ub3 -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2_P_Ub2 += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 78: \
-Mdm2_P_Ub2 -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2_P_Ub += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 79: \
-Mdm2_P_Ub -= 1.000000; \
-Mdm2DUB -= 1.000000; \
-Mdm2_P += 1.000000; \
-Mdm2DUB += 1.000000; \
-Ub += 1.000000; \
-break; \
-case 80: \
-Mdm2_P_Ub4 -= 1.000000; \
-Proteasome -= 1.000000; \
-Mdm2_P_Ub4_Proteasome += 1.000000; \
-break; \
-case 81: \
-Mdm2_P_Ub4_Proteasome -= 1.000000; \
-Proteasome += 1.000000; \
-Ub += 4.000000; \
-break; \
-case 82: \
-ATMA -= 1.000000; \
-ATMI += 1.000000; \
-break; \
-case 83: \
-Abeta -= 1.000000; \
-Abeta += 1.000000; \
-ROS += 1.000000; \
-break; \
-case 84: \
-AbetaPlaque -= 1.000000; \
-AbetaPlaque += 1.000000; \
-ROS += 1.000000; \
-break; \
-case 85: \
-AggAbeta_Proteasome -= 1.000000; \
-AggAbeta_Proteasome += 1.000000; \
-ROS += 1.000000; \
-break; \
-case 86: \
-ROS -= 1.000000; \
-ROS += 1.000000; \
-damDNA += 1.000000; \
-break; \
-case 87: \
-Tau += 1.000000; \
-break; \
-case 88: \
-Tau -= 1.000000; \
-Proteasome -= 1.000000; \
-Proteasome_Tau += 1.000000; \
-break; \
-case 89: \
-Proteasome_Tau -= 1.000000; \
-Proteasome += 1.000000; \
-break; \
-case 90: \
-Abeta -= 2.000000; \
-AbetaDimer += 1.000000; \
-break; \
-case 91: \
-AbetaDimer -= 2.000000; \
-AbetaPlaque += 1.000000; \
-break; \
-case 92: \
-AbetaDimer -= 1.000000; \
-AbetaPlaque -= 1.000000; \
-AbetaPlaque += 2.000000; \
-break; \
-case 93: \
-AbetaDimer -= 1.000000; \
-Abeta += 2.000000; \
-break; \
-case 94: \
-AbetaPlaque -= 1.000000; \
-AbetaDimer += 1.000000; \
-disaggPlaque1 += 1.000000; \
-break; \
-case 95: \
-AbetaPlaque -= 1.000000; \
-antiAb -= 1.000000; \
-AbetaDimer += 1.000000; \
-antiAb += 1.000000; \
-disaggPlaque2 += 1.000000; \
-break; \
-case 96: \
-Abeta -= 1.000000; \
-antiAb -= 1.000000; \
-Abeta_antiAb += 1.000000; \
-break; \
-case 97: \
-AbetaDimer -= 1.000000; \
-antiAb -= 1.000000; \
-AbetaDimer_antiAb += 1.000000; \
-break; \
-case 98: \
-Abeta_antiAb -= 1.000000; \
-antiAb += 1.000000; \
-break; \
-case 99: \
-AbetaDimer_antiAb -= 1.000000; \
-antiAb += 1.000000; \
-break; \
-case 100: \
-GliaI -= 1.000000; \
-AbetaPlaque -= 1.000000; \
-GliaM1 += 1.000000; \
-AbetaPlaque += 1.000000; \
-break; \
-case 101: \
-GliaM1 -= 1.000000; \
-AbetaPlaque -= 1.000000; \
-GliaM2 += 1.000000; \
-AbetaPlaque += 1.000000; \
-break; \
-case 102: \
-GliaM2 -= 1.000000; \
-antiAb -= 1.000000; \
-GliaA += 1.000000; \
-antiAb += 1.000000; \
-break; \
-case 103: \
-GliaA -= 1.000000; \
-GliaM2 += 1.000000; \
-break; \
-case 104: \
-GliaM2 -= 1.000000; \
-GliaM1 += 1.000000; \
-break; \
-case 105: \
-GliaM1 -= 1.000000; \
-GliaI += 1.000000; \
-break; \
-case 106: \
-AbetaPlaque -= 1.000000; \
-GliaA -= 1.000000; \
-AbetaPlaque_GliaA += 1.000000; \
-break; \
-case 107: \
-AbetaPlaque_GliaA -= 1.000000; \
-AbetaPlaque += 1.000000; \
-GliaA += 1.000000; \
-break; \
-case 108: \
-AbetaPlaque_GliaA -= 1.000000; \
-GliaA += 1.000000; \
-degAbetaGlia += 1.000000; \
-break; \
-case 109: \
-AbetaPlaque_GliaA -= 1.000000; \
-AbetaPlaque_GliaA += 1.000000; \
-ROS += 1.000000; \
-break; \
-case 110: \
-antiAb -= 1.000000; \
-break; \
-case 111: \
-ROS -= 1.000000; \
-break; \
-} \
+int reactionsSpecies[112][6];
+int reactionsValues[112][6];
+for(int i = 0; i < 112; i++){
+for(int j = 0; j < 6; j++){
+reactionsSpecies[i][j] = -1;
+reactionsValues[i][j] = 0;
+}
+}
+reactionsSpecies[0][0] = p53_mRNA_id; 
+reactionsValues[0][0] = 1.0000000000; 
+reactionsSpecies[1][0] = p53_mRNA_id; 
+reactionsValues[1][0] = -1.0000000000; 
+reactionsSpecies[2][0] = Mdm2_mRNA_id; 
+reactionsValues[2][0] = -1.0000000000; 
+reactionsSpecies[2][1] = Mdm2_mRNA_id; 
+reactionsValues[2][1] = 1.0000000000; 
+reactionsSpecies[2][2] = Mdm2_id; 
+reactionsValues[2][2] = 1.0000000000; 
+reactionsSpecies[3][0] = p53_id; 
+reactionsValues[3][0] = -1.0000000000; 
+reactionsSpecies[3][1] = p53_id; 
+reactionsValues[3][1] = 1.0000000000; 
+reactionsSpecies[3][2] = Mdm2_mRNA_id; 
+reactionsValues[3][2] = 1.0000000000; 
+reactionsSpecies[4][0] = p53_P_id; 
+reactionsValues[4][0] = -1.0000000000; 
+reactionsSpecies[4][1] = p53_P_id; 
+reactionsValues[4][1] = 1.0000000000; 
+reactionsSpecies[4][2] = Mdm2_mRNA_id; 
+reactionsValues[4][2] = 1.0000000000; 
+reactionsSpecies[5][0] = GSK3b_p53_id; 
+reactionsValues[5][0] = -1.0000000000; 
+reactionsSpecies[5][1] = GSK3b_p53_id; 
+reactionsValues[5][1] = 1.0000000000; 
+reactionsSpecies[5][2] = Mdm2_mRNA_id; 
+reactionsValues[5][2] = 1.0000000000; 
+reactionsSpecies[6][0] = GSK3b_p53_P_id; 
+reactionsValues[6][0] = -1.0000000000; 
+reactionsSpecies[6][1] = GSK3b_p53_P_id; 
+reactionsValues[6][1] = 1.0000000000; 
+reactionsSpecies[6][2] = Mdm2_mRNA_id; 
+reactionsValues[6][2] = 1.0000000000; 
+reactionsSpecies[7][0] = Mdm2_mRNA_id; 
+reactionsValues[7][0] = -1.0000000000; 
+reactionsSpecies[8][0] = p53_id; 
+reactionsValues[8][0] = -1.0000000000; 
+reactionsSpecies[8][1] = Mdm2_id; 
+reactionsValues[8][1] = -1.0000000000; 
+reactionsSpecies[8][2] = Mdm2_p53_id; 
+reactionsValues[8][2] = 1.0000000000; 
+reactionsSpecies[9][0] = Mdm2_p53_id; 
+reactionsValues[9][0] = -1.0000000000; 
+reactionsSpecies[9][1] = p53_id; 
+reactionsValues[9][1] = 1.0000000000; 
+reactionsSpecies[9][2] = Mdm2_id; 
+reactionsValues[9][2] = 1.0000000000; 
+reactionsSpecies[10][0] = GSK3b_id; 
+reactionsValues[10][0] = -1.0000000000; 
+reactionsSpecies[10][1] = p53_id; 
+reactionsValues[10][1] = -1.0000000000; 
+reactionsSpecies[10][2] = GSK3b_p53_id; 
+reactionsValues[10][2] = 1.0000000000; 
+reactionsSpecies[11][0] = GSK3b_p53_id; 
+reactionsValues[11][0] = -1.0000000000; 
+reactionsSpecies[11][1] = GSK3b_id; 
+reactionsValues[11][1] = 1.0000000000; 
+reactionsSpecies[11][2] = p53_id; 
+reactionsValues[11][2] = 1.0000000000; 
+reactionsSpecies[12][0] = GSK3b_id; 
+reactionsValues[12][0] = -1.0000000000; 
+reactionsSpecies[12][1] = p53_P_id; 
+reactionsValues[12][1] = -1.0000000000; 
+reactionsSpecies[12][2] = GSK3b_p53_P_id; 
+reactionsValues[12][2] = 1.0000000000; 
+reactionsSpecies[13][0] = GSK3b_p53_P_id; 
+reactionsValues[13][0] = -1.0000000000; 
+reactionsSpecies[13][1] = GSK3b_id; 
+reactionsValues[13][1] = 1.0000000000; 
+reactionsSpecies[13][2] = p53_P_id; 
+reactionsValues[13][2] = 1.0000000000; 
+reactionsSpecies[14][0] = E1_id; 
+reactionsValues[14][0] = -1.0000000000; 
+reactionsSpecies[14][1] = Ub_id; 
+reactionsValues[14][1] = -1.0000000000; 
+reactionsSpecies[14][2] = E1_Ub_id; 
+reactionsValues[14][2] = 1.0000000000; 
+reactionsSpecies[15][0] = E2_id; 
+reactionsValues[15][0] = -1.0000000000; 
+reactionsSpecies[15][1] = E1_Ub_id; 
+reactionsValues[15][1] = -1.0000000000; 
+reactionsSpecies[15][2] = E2_Ub_id; 
+reactionsValues[15][2] = 1.0000000000; 
+reactionsSpecies[15][3] = E1_id; 
+reactionsValues[15][3] = 1.0000000000; 
+reactionsSpecies[16][0] = Mdm2_id; 
+reactionsValues[16][0] = -1.0000000000; 
+reactionsSpecies[16][1] = E2_Ub_id; 
+reactionsValues[16][1] = -1.0000000000; 
+reactionsSpecies[16][2] = Mdm2_Ub_id; 
+reactionsValues[16][2] = 1.0000000000; 
+reactionsSpecies[16][3] = E2_id; 
+reactionsValues[16][3] = 1.0000000000; 
+reactionsSpecies[17][0] = Mdm2_Ub_id; 
+reactionsValues[17][0] = -1.0000000000; 
+reactionsSpecies[17][1] = E2_Ub_id; 
+reactionsValues[17][1] = -1.0000000000; 
+reactionsSpecies[17][2] = Mdm2_Ub2_id; 
+reactionsValues[17][2] = 1.0000000000; 
+reactionsSpecies[17][3] = E2_id; 
+reactionsValues[17][3] = 1.0000000000; 
+reactionsSpecies[18][0] = Mdm2_Ub2_id; 
+reactionsValues[18][0] = -1.0000000000; 
+reactionsSpecies[18][1] = E2_Ub_id; 
+reactionsValues[18][1] = -1.0000000000; 
+reactionsSpecies[18][2] = Mdm2_Ub3_id; 
+reactionsValues[18][2] = 1.0000000000; 
+reactionsSpecies[18][3] = E2_id; 
+reactionsValues[18][3] = 1.0000000000; 
+reactionsSpecies[19][0] = Mdm2_Ub3_id; 
+reactionsValues[19][0] = -1.0000000000; 
+reactionsSpecies[19][1] = E2_Ub_id; 
+reactionsValues[19][1] = -1.0000000000; 
+reactionsSpecies[19][2] = Mdm2_Ub4_id; 
+reactionsValues[19][2] = 1.0000000000; 
+reactionsSpecies[19][3] = E2_id; 
+reactionsValues[19][3] = 1.0000000000; 
+reactionsSpecies[20][0] = Mdm2_Ub4_id; 
+reactionsValues[20][0] = -1.0000000000; 
+reactionsSpecies[20][1] = Mdm2DUB_id; 
+reactionsValues[20][1] = -1.0000000000; 
+reactionsSpecies[20][2] = Mdm2_Ub3_id; 
+reactionsValues[20][2] = 1.0000000000; 
+reactionsSpecies[20][3] = Mdm2DUB_id; 
+reactionsValues[20][3] = 1.0000000000; 
+reactionsSpecies[20][4] = Ub_id; 
+reactionsValues[20][4] = 1.0000000000; 
+reactionsSpecies[21][0] = Mdm2_Ub3_id; 
+reactionsValues[21][0] = -1.0000000000; 
+reactionsSpecies[21][1] = Mdm2DUB_id; 
+reactionsValues[21][1] = -1.0000000000; 
+reactionsSpecies[21][2] = Mdm2_Ub2_id; 
+reactionsValues[21][2] = 1.0000000000; 
+reactionsSpecies[21][3] = Mdm2DUB_id; 
+reactionsValues[21][3] = 1.0000000000; 
+reactionsSpecies[21][4] = Ub_id; 
+reactionsValues[21][4] = 1.0000000000; 
+reactionsSpecies[22][0] = Mdm2_Ub2_id; 
+reactionsValues[22][0] = -1.0000000000; 
+reactionsSpecies[22][1] = Mdm2DUB_id; 
+reactionsValues[22][1] = -1.0000000000; 
+reactionsSpecies[22][2] = Mdm2_Ub_id; 
+reactionsValues[22][2] = 1.0000000000; 
+reactionsSpecies[22][3] = Mdm2DUB_id; 
+reactionsValues[22][3] = 1.0000000000; 
+reactionsSpecies[22][4] = Ub_id; 
+reactionsValues[22][4] = 1.0000000000; 
+reactionsSpecies[23][0] = Mdm2_Ub_id; 
+reactionsValues[23][0] = -1.0000000000; 
+reactionsSpecies[23][1] = Mdm2DUB_id; 
+reactionsValues[23][1] = -1.0000000000; 
+reactionsSpecies[23][2] = Mdm2_id; 
+reactionsValues[23][2] = 1.0000000000; 
+reactionsSpecies[23][3] = Mdm2DUB_id; 
+reactionsValues[23][3] = 1.0000000000; 
+reactionsSpecies[23][4] = Ub_id; 
+reactionsValues[23][4] = 1.0000000000; 
+reactionsSpecies[24][0] = Mdm2_Ub4_id; 
+reactionsValues[24][0] = -1.0000000000; 
+reactionsSpecies[24][1] = Proteasome_id; 
+reactionsValues[24][1] = -1.0000000000; 
+reactionsSpecies[24][2] = Mdm2_Ub4_Proteasome_id; 
+reactionsValues[24][2] = 1.0000000000; 
+reactionsSpecies[25][0] = Mdm2_Ub4_Proteasome_id; 
+reactionsValues[25][0] = -1.0000000000; 
+reactionsSpecies[25][1] = Proteasome_id; 
+reactionsValues[25][1] = 1.0000000000; 
+reactionsSpecies[25][2] = Ub_id; 
+reactionsValues[25][2] = 4.0000000000; 
+reactionsSpecies[26][0] = p53_mRNA_id; 
+reactionsValues[26][0] = -1.0000000000; 
+reactionsSpecies[26][1] = p53_id; 
+reactionsValues[26][1] = 1.0000000000; 
+reactionsSpecies[26][2] = p53_mRNA_id; 
+reactionsValues[26][2] = 1.0000000000; 
+reactionsSpecies[27][0] = E2_Ub_id; 
+reactionsValues[27][0] = -1.0000000000; 
+reactionsSpecies[27][1] = Mdm2_p53_id; 
+reactionsValues[27][1] = -1.0000000000; 
+reactionsSpecies[27][2] = Mdm2_p53_Ub_id; 
+reactionsValues[27][2] = 1.0000000000; 
+reactionsSpecies[27][3] = E2_id; 
+reactionsValues[27][3] = 1.0000000000; 
+reactionsSpecies[28][0] = Mdm2_p53_Ub_id; 
+reactionsValues[28][0] = -1.0000000000; 
+reactionsSpecies[28][1] = E2_Ub_id; 
+reactionsValues[28][1] = -1.0000000000; 
+reactionsSpecies[28][2] = Mdm2_p53_Ub2_id; 
+reactionsValues[28][2] = 1.0000000000; 
+reactionsSpecies[28][3] = E2_id; 
+reactionsValues[28][3] = 1.0000000000; 
+reactionsSpecies[29][0] = Mdm2_p53_Ub2_id; 
+reactionsValues[29][0] = -1.0000000000; 
+reactionsSpecies[29][1] = E2_Ub_id; 
+reactionsValues[29][1] = -1.0000000000; 
+reactionsSpecies[29][2] = Mdm2_p53_Ub3_id; 
+reactionsValues[29][2] = 1.0000000000; 
+reactionsSpecies[29][3] = E2_id; 
+reactionsValues[29][3] = 1.0000000000; 
+reactionsSpecies[30][0] = Mdm2_p53_Ub3_id; 
+reactionsValues[30][0] = -1.0000000000; 
+reactionsSpecies[30][1] = E2_Ub_id; 
+reactionsValues[30][1] = -1.0000000000; 
+reactionsSpecies[30][2] = Mdm2_p53_Ub4_id; 
+reactionsValues[30][2] = 1.0000000000; 
+reactionsSpecies[30][3] = E2_id; 
+reactionsValues[30][3] = 1.0000000000; 
+reactionsSpecies[31][0] = Mdm2_p53_Ub4_id; 
+reactionsValues[31][0] = -1.0000000000; 
+reactionsSpecies[31][1] = p53DUB_id; 
+reactionsValues[31][1] = -1.0000000000; 
+reactionsSpecies[31][2] = Mdm2_p53_Ub3_id; 
+reactionsValues[31][2] = 1.0000000000; 
+reactionsSpecies[31][3] = p53DUB_id; 
+reactionsValues[31][3] = 1.0000000000; 
+reactionsSpecies[31][4] = Ub_id; 
+reactionsValues[31][4] = 1.0000000000; 
+reactionsSpecies[32][0] = Mdm2_p53_Ub3_id; 
+reactionsValues[32][0] = -1.0000000000; 
+reactionsSpecies[32][1] = p53DUB_id; 
+reactionsValues[32][1] = -1.0000000000; 
+reactionsSpecies[32][2] = Mdm2_p53_Ub2_id; 
+reactionsValues[32][2] = 1.0000000000; 
+reactionsSpecies[32][3] = p53DUB_id; 
+reactionsValues[32][3] = 1.0000000000; 
+reactionsSpecies[32][4] = Ub_id; 
+reactionsValues[32][4] = 1.0000000000; 
+reactionsSpecies[33][0] = Mdm2_p53_Ub2_id; 
+reactionsValues[33][0] = -1.0000000000; 
+reactionsSpecies[33][1] = p53DUB_id; 
+reactionsValues[33][1] = -1.0000000000; 
+reactionsSpecies[33][2] = Mdm2_p53_Ub_id; 
+reactionsValues[33][2] = 1.0000000000; 
+reactionsSpecies[33][3] = p53DUB_id; 
+reactionsValues[33][3] = 1.0000000000; 
+reactionsSpecies[33][4] = Ub_id; 
+reactionsValues[33][4] = 1.0000000000; 
+reactionsSpecies[34][0] = Mdm2_p53_Ub_id; 
+reactionsValues[34][0] = -1.0000000000; 
+reactionsSpecies[34][1] = p53DUB_id; 
+reactionsValues[34][1] = -1.0000000000; 
+reactionsSpecies[34][2] = Mdm2_p53_id; 
+reactionsValues[34][2] = 1.0000000000; 
+reactionsSpecies[34][3] = p53DUB_id; 
+reactionsValues[34][3] = 1.0000000000; 
+reactionsSpecies[34][4] = Ub_id; 
+reactionsValues[34][4] = 1.0000000000; 
+reactionsSpecies[35][0] = Mdm2_p53_Ub4_id; 
+reactionsValues[35][0] = -1.0000000000; 
+reactionsSpecies[35][1] = GSK3b_id; 
+reactionsValues[35][1] = -1.0000000000; 
+reactionsSpecies[35][2] = Mdm2_P1_p53_Ub4_id; 
+reactionsValues[35][2] = 1.0000000000; 
+reactionsSpecies[35][3] = GSK3b_id; 
+reactionsValues[35][3] = 1.0000000000; 
+reactionsSpecies[36][0] = Mdm2_p53_Ub4_id; 
+reactionsValues[36][0] = -1.0000000000; 
+reactionsSpecies[36][1] = GSK3b_p53_id; 
+reactionsValues[36][1] = -1.0000000000; 
+reactionsSpecies[36][2] = Mdm2_P1_p53_Ub4_id; 
+reactionsValues[36][2] = 1.0000000000; 
+reactionsSpecies[36][3] = GSK3b_p53_id; 
+reactionsValues[36][3] = 1.0000000000; 
+reactionsSpecies[37][0] = Mdm2_p53_Ub4_id; 
+reactionsValues[37][0] = -1.0000000000; 
+reactionsSpecies[37][1] = GSK3b_p53_P_id; 
+reactionsValues[37][1] = -1.0000000000; 
+reactionsSpecies[37][2] = Mdm2_P1_p53_Ub4_id; 
+reactionsValues[37][2] = 1.0000000000; 
+reactionsSpecies[37][3] = GSK3b_p53_P_id; 
+reactionsValues[37][3] = 1.0000000000; 
+reactionsSpecies[38][0] = Mdm2_P1_p53_Ub4_id; 
+reactionsValues[38][0] = -1.0000000000; 
+reactionsSpecies[38][1] = Proteasome_id; 
+reactionsValues[38][1] = -1.0000000000; 
+reactionsSpecies[38][2] = p53_Ub4_Proteasome_id; 
+reactionsValues[38][2] = 1.0000000000; 
+reactionsSpecies[38][3] = Mdm2_id; 
+reactionsValues[38][3] = 1.0000000000; 
+reactionsSpecies[39][0] = p53_Ub4_Proteasome_id; 
+reactionsValues[39][0] = -1.0000000000; 
+reactionsSpecies[39][1] = Ub_id; 
+reactionsValues[39][1] = 4.0000000000; 
+reactionsSpecies[39][2] = Proteasome_id; 
+reactionsValues[39][2] = 1.0000000000; 
+reactionsSpecies[40][0] = Tau_id; 
+reactionsValues[40][0] = -1.0000000000; 
+reactionsSpecies[40][1] = MT_Tau_id; 
+reactionsValues[40][1] = 1.0000000000; 
+reactionsSpecies[41][0] = MT_Tau_id; 
+reactionsValues[41][0] = -1.0000000000; 
+reactionsSpecies[41][1] = Tau_id; 
+reactionsValues[41][1] = 1.0000000000; 
+reactionsSpecies[42][0] = GSK3b_p53_id; 
+reactionsValues[42][0] = -1.0000000000; 
+reactionsSpecies[42][1] = Tau_id; 
+reactionsValues[42][1] = -1.0000000000; 
+reactionsSpecies[42][2] = GSK3b_p53_id; 
+reactionsValues[42][2] = 1.0000000000; 
+reactionsSpecies[42][3] = Tau_P1_id; 
+reactionsValues[42][3] = 1.0000000000; 
+reactionsSpecies[43][0] = GSK3b_p53_id; 
+reactionsValues[43][0] = -1.0000000000; 
+reactionsSpecies[43][1] = Tau_P1_id; 
+reactionsValues[43][1] = -1.0000000000; 
+reactionsSpecies[43][2] = GSK3b_p53_id; 
+reactionsValues[43][2] = 1.0000000000; 
+reactionsSpecies[43][3] = Tau_P2_id; 
+reactionsValues[43][3] = 1.0000000000; 
+reactionsSpecies[44][0] = GSK3b_p53_P_id; 
+reactionsValues[44][0] = -1.0000000000; 
+reactionsSpecies[44][1] = Tau_id; 
+reactionsValues[44][1] = -1.0000000000; 
+reactionsSpecies[44][2] = GSK3b_p53_P_id; 
+reactionsValues[44][2] = 1.0000000000; 
+reactionsSpecies[44][3] = Tau_P1_id; 
+reactionsValues[44][3] = 1.0000000000; 
+reactionsSpecies[45][0] = GSK3b_p53_P_id; 
+reactionsValues[45][0] = -1.0000000000; 
+reactionsSpecies[45][1] = Tau_P1_id; 
+reactionsValues[45][1] = -1.0000000000; 
+reactionsSpecies[45][2] = GSK3b_p53_P_id; 
+reactionsValues[45][2] = 1.0000000000; 
+reactionsSpecies[45][3] = Tau_P2_id; 
+reactionsValues[45][3] = 1.0000000000; 
+reactionsSpecies[46][0] = GSK3b_id; 
+reactionsValues[46][0] = -1.0000000000; 
+reactionsSpecies[46][1] = Tau_id; 
+reactionsValues[46][1] = -1.0000000000; 
+reactionsSpecies[46][2] = GSK3b_id; 
+reactionsValues[46][2] = 1.0000000000; 
+reactionsSpecies[46][3] = Tau_P1_id; 
+reactionsValues[46][3] = 1.0000000000; 
+reactionsSpecies[47][0] = GSK3b_id; 
+reactionsValues[47][0] = -1.0000000000; 
+reactionsSpecies[47][1] = Tau_P1_id; 
+reactionsValues[47][1] = -1.0000000000; 
+reactionsSpecies[47][2] = GSK3b_id; 
+reactionsValues[47][2] = 1.0000000000; 
+reactionsSpecies[47][3] = Tau_P2_id; 
+reactionsValues[47][3] = 1.0000000000; 
+reactionsSpecies[48][0] = Tau_P2_id; 
+reactionsValues[48][0] = -1.0000000000; 
+reactionsSpecies[48][1] = PP1_id; 
+reactionsValues[48][1] = -1.0000000000; 
+reactionsSpecies[48][2] = Tau_P1_id; 
+reactionsValues[48][2] = 1.0000000000; 
+reactionsSpecies[48][3] = PP1_id; 
+reactionsValues[48][3] = 1.0000000000; 
+reactionsSpecies[49][0] = Tau_P1_id; 
+reactionsValues[49][0] = -1.0000000000; 
+reactionsSpecies[49][1] = PP1_id; 
+reactionsValues[49][1] = -1.0000000000; 
+reactionsSpecies[49][2] = Tau_id; 
+reactionsValues[49][2] = 1.0000000000; 
+reactionsSpecies[49][3] = PP1_id; 
+reactionsValues[49][3] = 1.0000000000; 
+reactionsSpecies[50][0] = Tau_P1_id; 
+reactionsValues[50][0] = -2.0000000000; 
+reactionsSpecies[50][1] = AggTau_id; 
+reactionsValues[50][1] = 2.0000000000; 
+reactionsSpecies[51][0] = Tau_P1_id; 
+reactionsValues[51][0] = -1.0000000000; 
+reactionsSpecies[51][1] = AggTau_id; 
+reactionsValues[51][1] = -1.0000000000; 
+reactionsSpecies[51][2] = AggTau_id; 
+reactionsValues[51][2] = 2.0000000000; 
+reactionsSpecies[52][0] = Tau_P2_id; 
+reactionsValues[52][0] = -2.0000000000; 
+reactionsSpecies[52][1] = AggTau_id; 
+reactionsValues[52][1] = 2.0000000000; 
+reactionsSpecies[53][0] = Tau_P2_id; 
+reactionsValues[53][0] = -1.0000000000; 
+reactionsSpecies[53][1] = AggTau_id; 
+reactionsValues[53][1] = -1.0000000000; 
+reactionsSpecies[53][2] = AggTau_id; 
+reactionsValues[53][2] = 2.0000000000; 
+reactionsSpecies[54][0] = Tau_id; 
+reactionsValues[54][0] = -2.0000000000; 
+reactionsSpecies[54][1] = AggTau_id; 
+reactionsValues[54][1] = 2.0000000000; 
+reactionsSpecies[55][0] = Tau_id; 
+reactionsValues[55][0] = -1.0000000000; 
+reactionsSpecies[55][1] = AggTau_id; 
+reactionsValues[55][1] = -1.0000000000; 
+reactionsSpecies[55][2] = AggTau_id; 
+reactionsValues[55][2] = 2.0000000000; 
+reactionsSpecies[56][0] = AggTau_id; 
+reactionsValues[56][0] = -2.0000000000; 
+reactionsSpecies[56][1] = NFT_id; 
+reactionsValues[56][1] = 2.0000000000; 
+reactionsSpecies[57][0] = AggTau_id; 
+reactionsValues[57][0] = -1.0000000000; 
+reactionsSpecies[57][1] = NFT_id; 
+reactionsValues[57][1] = -1.0000000000; 
+reactionsSpecies[57][2] = NFT_id; 
+reactionsValues[57][2] = 2.0000000000; 
+reactionsSpecies[58][0] = AggTau_id; 
+reactionsValues[58][0] = -1.0000000000; 
+reactionsSpecies[58][1] = Proteasome_id; 
+reactionsValues[58][1] = -1.0000000000; 
+reactionsSpecies[58][2] = AggTau_Proteasome_id; 
+reactionsValues[58][2] = 1.0000000000; 
+reactionsSpecies[59][0] = Abeta_id; 
+reactionsValues[59][0] = 1.0000000000; 
+reactionsSpecies[60][0] = GSK3b_p53_id; 
+reactionsValues[60][0] = -1.0000000000; 
+reactionsSpecies[60][1] = Abeta_id; 
+reactionsValues[60][1] = 1.0000000000; 
+reactionsSpecies[60][2] = GSK3b_p53_id; 
+reactionsValues[60][2] = 1.0000000000; 
+reactionsSpecies[61][0] = GSK3b_p53_P_id; 
+reactionsValues[61][0] = -1.0000000000; 
+reactionsSpecies[61][1] = Abeta_id; 
+reactionsValues[61][1] = 1.0000000000; 
+reactionsSpecies[61][2] = GSK3b_p53_P_id; 
+reactionsValues[61][2] = 1.0000000000; 
+reactionsSpecies[62][0] = AbetaDimer_id; 
+reactionsValues[62][0] = -1.0000000000; 
+reactionsSpecies[62][1] = Proteasome_id; 
+reactionsValues[62][1] = -1.0000000000; 
+reactionsSpecies[62][2] = AggAbeta_Proteasome_id; 
+reactionsValues[62][2] = 1.0000000000; 
+reactionsSpecies[63][0] = Abeta_id; 
+reactionsValues[63][0] = -1.0000000000; 
+reactionsSpecies[64][0] = Abeta_id; 
+reactionsValues[64][0] = -1.0000000000; 
+reactionsSpecies[64][1] = p53_mRNA_id; 
+reactionsValues[64][1] = 1.0000000000; 
+reactionsSpecies[64][2] = Abeta_id; 
+reactionsValues[64][2] = 1.0000000000; 
+reactionsSpecies[65][0] = IR_id; 
+reactionsValues[65][0] = -1.0000000000; 
+reactionsSpecies[65][1] = IR_id; 
+reactionsValues[65][1] = 1.0000000000; 
+reactionsSpecies[65][2] = damDNA_id; 
+reactionsValues[65][2] = 1.0000000000; 
+reactionsSpecies[66][0] = damDNA_id; 
+reactionsValues[66][0] = -1.0000000000; 
+reactionsSpecies[67][0] = damDNA_id; 
+reactionsValues[67][0] = -1.0000000000; 
+reactionsSpecies[67][1] = ATMI_id; 
+reactionsValues[67][1] = -1.0000000000; 
+reactionsSpecies[67][2] = damDNA_id; 
+reactionsValues[67][2] = 1.0000000000; 
+reactionsSpecies[67][3] = ATMA_id; 
+reactionsValues[67][3] = 1.0000000000; 
+reactionsSpecies[68][0] = p53_id; 
+reactionsValues[68][0] = -1.0000000000; 
+reactionsSpecies[68][1] = ATMA_id; 
+reactionsValues[68][1] = -1.0000000000; 
+reactionsSpecies[68][2] = p53_P_id; 
+reactionsValues[68][2] = 1.0000000000; 
+reactionsSpecies[68][3] = ATMA_id; 
+reactionsValues[68][3] = 1.0000000000; 
+reactionsSpecies[69][0] = p53_P_id; 
+reactionsValues[69][0] = -1.0000000000; 
+reactionsSpecies[69][1] = p53_id; 
+reactionsValues[69][1] = 1.0000000000; 
+reactionsSpecies[70][0] = Mdm2_id; 
+reactionsValues[70][0] = -1.0000000000; 
+reactionsSpecies[70][1] = ATMA_id; 
+reactionsValues[70][1] = -1.0000000000; 
+reactionsSpecies[70][2] = Mdm2_P_id; 
+reactionsValues[70][2] = 1.0000000000; 
+reactionsSpecies[70][3] = ATMA_id; 
+reactionsValues[70][3] = 1.0000000000; 
+reactionsSpecies[71][0] = Mdm2_P_id; 
+reactionsValues[71][0] = -1.0000000000; 
+reactionsSpecies[71][1] = Mdm2_id; 
+reactionsValues[71][1] = 1.0000000000; 
+reactionsSpecies[72][0] = Mdm2_P_id; 
+reactionsValues[72][0] = -1.0000000000; 
+reactionsSpecies[72][1] = E2_Ub_id; 
+reactionsValues[72][1] = -1.0000000000; 
+reactionsSpecies[72][2] = Mdm2_P_Ub_id; 
+reactionsValues[72][2] = 1.0000000000; 
+reactionsSpecies[72][3] = E2_id; 
+reactionsValues[72][3] = 1.0000000000; 
+reactionsSpecies[73][0] = Mdm2_P_Ub_id; 
+reactionsValues[73][0] = -1.0000000000; 
+reactionsSpecies[73][1] = E2_Ub_id; 
+reactionsValues[73][1] = -1.0000000000; 
+reactionsSpecies[73][2] = Mdm2_P_Ub2_id; 
+reactionsValues[73][2] = 1.0000000000; 
+reactionsSpecies[73][3] = E2_id; 
+reactionsValues[73][3] = 1.0000000000; 
+reactionsSpecies[74][0] = Mdm2_P_Ub2_id; 
+reactionsValues[74][0] = -1.0000000000; 
+reactionsSpecies[74][1] = E2_Ub_id; 
+reactionsValues[74][1] = -1.0000000000; 
+reactionsSpecies[74][2] = Mdm2_P_Ub3_id; 
+reactionsValues[74][2] = 1.0000000000; 
+reactionsSpecies[74][3] = E2_id; 
+reactionsValues[74][3] = 1.0000000000; 
+reactionsSpecies[75][0] = Mdm2_P_Ub3_id; 
+reactionsValues[75][0] = -1.0000000000; 
+reactionsSpecies[75][1] = E2_Ub_id; 
+reactionsValues[75][1] = -1.0000000000; 
+reactionsSpecies[75][2] = Mdm2_P_Ub4_id; 
+reactionsValues[75][2] = 1.0000000000; 
+reactionsSpecies[75][3] = E2_id; 
+reactionsValues[75][3] = 1.0000000000; 
+reactionsSpecies[76][0] = Mdm2_P_Ub4_id; 
+reactionsValues[76][0] = -1.0000000000; 
+reactionsSpecies[76][1] = Mdm2DUB_id; 
+reactionsValues[76][1] = -1.0000000000; 
+reactionsSpecies[76][2] = Mdm2_P_Ub3_id; 
+reactionsValues[76][2] = 1.0000000000; 
+reactionsSpecies[76][3] = Mdm2DUB_id; 
+reactionsValues[76][3] = 1.0000000000; 
+reactionsSpecies[76][4] = Ub_id; 
+reactionsValues[76][4] = 1.0000000000; 
+reactionsSpecies[77][0] = Mdm2_P_Ub3_id; 
+reactionsValues[77][0] = -1.0000000000; 
+reactionsSpecies[77][1] = Mdm2DUB_id; 
+reactionsValues[77][1] = -1.0000000000; 
+reactionsSpecies[77][2] = Mdm2_P_Ub2_id; 
+reactionsValues[77][2] = 1.0000000000; 
+reactionsSpecies[77][3] = Mdm2DUB_id; 
+reactionsValues[77][3] = 1.0000000000; 
+reactionsSpecies[77][4] = Ub_id; 
+reactionsValues[77][4] = 1.0000000000; 
+reactionsSpecies[78][0] = Mdm2_P_Ub2_id; 
+reactionsValues[78][0] = -1.0000000000; 
+reactionsSpecies[78][1] = Mdm2DUB_id; 
+reactionsValues[78][1] = -1.0000000000; 
+reactionsSpecies[78][2] = Mdm2_P_Ub_id; 
+reactionsValues[78][2] = 1.0000000000; 
+reactionsSpecies[78][3] = Mdm2DUB_id; 
+reactionsValues[78][3] = 1.0000000000; 
+reactionsSpecies[78][4] = Ub_id; 
+reactionsValues[78][4] = 1.0000000000; 
+reactionsSpecies[79][0] = Mdm2_P_Ub_id; 
+reactionsValues[79][0] = -1.0000000000; 
+reactionsSpecies[79][1] = Mdm2DUB_id; 
+reactionsValues[79][1] = -1.0000000000; 
+reactionsSpecies[79][2] = Mdm2_P_id; 
+reactionsValues[79][2] = 1.0000000000; 
+reactionsSpecies[79][3] = Mdm2DUB_id; 
+reactionsValues[79][3] = 1.0000000000; 
+reactionsSpecies[79][4] = Ub_id; 
+reactionsValues[79][4] = 1.0000000000; 
+reactionsSpecies[80][0] = Mdm2_P_Ub4_id; 
+reactionsValues[80][0] = -1.0000000000; 
+reactionsSpecies[80][1] = Proteasome_id; 
+reactionsValues[80][1] = -1.0000000000; 
+reactionsSpecies[80][2] = Mdm2_P_Ub4_Proteasome_id; 
+reactionsValues[80][2] = 1.0000000000; 
+reactionsSpecies[81][0] = Mdm2_P_Ub4_Proteasome_id; 
+reactionsValues[81][0] = -1.0000000000; 
+reactionsSpecies[81][1] = Proteasome_id; 
+reactionsValues[81][1] = 1.0000000000; 
+reactionsSpecies[81][2] = Ub_id; 
+reactionsValues[81][2] = 4.0000000000; 
+reactionsSpecies[82][0] = ATMA_id; 
+reactionsValues[82][0] = -1.0000000000; 
+reactionsSpecies[82][1] = ATMI_id; 
+reactionsValues[82][1] = 1.0000000000; 
+reactionsSpecies[83][0] = Abeta_id; 
+reactionsValues[83][0] = -1.0000000000; 
+reactionsSpecies[83][1] = Abeta_id; 
+reactionsValues[83][1] = 1.0000000000; 
+reactionsSpecies[83][2] = ROS_id; 
+reactionsValues[83][2] = 1.0000000000; 
+reactionsSpecies[84][0] = AbetaPlaque_id; 
+reactionsValues[84][0] = -1.0000000000; 
+reactionsSpecies[84][1] = AbetaPlaque_id; 
+reactionsValues[84][1] = 1.0000000000; 
+reactionsSpecies[84][2] = ROS_id; 
+reactionsValues[84][2] = 1.0000000000; 
+reactionsSpecies[85][0] = AggAbeta_Proteasome_id; 
+reactionsValues[85][0] = -1.0000000000; 
+reactionsSpecies[85][1] = AggAbeta_Proteasome_id; 
+reactionsValues[85][1] = 1.0000000000; 
+reactionsSpecies[85][2] = ROS_id; 
+reactionsValues[85][2] = 1.0000000000; 
+reactionsSpecies[86][0] = ROS_id; 
+reactionsValues[86][0] = -1.0000000000; 
+reactionsSpecies[86][1] = ROS_id; 
+reactionsValues[86][1] = 1.0000000000; 
+reactionsSpecies[86][2] = damDNA_id; 
+reactionsValues[86][2] = 1.0000000000; 
+reactionsSpecies[87][0] = Tau_id; 
+reactionsValues[87][0] = 1.0000000000; 
+reactionsSpecies[88][0] = Tau_id; 
+reactionsValues[88][0] = -1.0000000000; 
+reactionsSpecies[88][1] = Proteasome_id; 
+reactionsValues[88][1] = -1.0000000000; 
+reactionsSpecies[88][2] = Proteasome_Tau_id; 
+reactionsValues[88][2] = 1.0000000000; 
+reactionsSpecies[89][0] = Proteasome_Tau_id; 
+reactionsValues[89][0] = -1.0000000000; 
+reactionsSpecies[89][1] = Proteasome_id; 
+reactionsValues[89][1] = 1.0000000000; 
+reactionsSpecies[90][0] = Abeta_id; 
+reactionsValues[90][0] = -2.0000000000; 
+reactionsSpecies[90][1] = AbetaDimer_id; 
+reactionsValues[90][1] = 1.0000000000; 
+reactionsSpecies[91][0] = AbetaDimer_id; 
+reactionsValues[91][0] = -2.0000000000; 
+reactionsSpecies[91][1] = AbetaPlaque_id; 
+reactionsValues[91][1] = 1.0000000000; 
+reactionsSpecies[92][0] = AbetaDimer_id; 
+reactionsValues[92][0] = -1.0000000000; 
+reactionsSpecies[92][1] = AbetaPlaque_id; 
+reactionsValues[92][1] = -1.0000000000; 
+reactionsSpecies[92][2] = AbetaPlaque_id; 
+reactionsValues[92][2] = 2.0000000000; 
+reactionsSpecies[93][0] = AbetaDimer_id; 
+reactionsValues[93][0] = -1.0000000000; 
+reactionsSpecies[93][1] = Abeta_id; 
+reactionsValues[93][1] = 2.0000000000; 
+reactionsSpecies[94][0] = AbetaPlaque_id; 
+reactionsValues[94][0] = -1.0000000000; 
+reactionsSpecies[94][1] = AbetaDimer_id; 
+reactionsValues[94][1] = 1.0000000000; 
+reactionsSpecies[94][2] = disaggPlaque1_id; 
+reactionsValues[94][2] = 1.0000000000; 
+reactionsSpecies[95][0] = AbetaPlaque_id; 
+reactionsValues[95][0] = -1.0000000000; 
+reactionsSpecies[95][1] = antiAb_id; 
+reactionsValues[95][1] = -1.0000000000; 
+reactionsSpecies[95][2] = AbetaDimer_id; 
+reactionsValues[95][2] = 1.0000000000; 
+reactionsSpecies[95][3] = antiAb_id; 
+reactionsValues[95][3] = 1.0000000000; 
+reactionsSpecies[95][4] = disaggPlaque2_id; 
+reactionsValues[95][4] = 1.0000000000; 
+reactionsSpecies[96][0] = Abeta_id; 
+reactionsValues[96][0] = -1.0000000000; 
+reactionsSpecies[96][1] = antiAb_id; 
+reactionsValues[96][1] = -1.0000000000; 
+reactionsSpecies[96][2] = Abeta_antiAb_id; 
+reactionsValues[96][2] = 1.0000000000; 
+reactionsSpecies[97][0] = AbetaDimer_id; 
+reactionsValues[97][0] = -1.0000000000; 
+reactionsSpecies[97][1] = antiAb_id; 
+reactionsValues[97][1] = -1.0000000000; 
+reactionsSpecies[97][2] = AbetaDimer_antiAb_id; 
+reactionsValues[97][2] = 1.0000000000; 
+reactionsSpecies[98][0] = Abeta_antiAb_id; 
+reactionsValues[98][0] = -1.0000000000; 
+reactionsSpecies[98][1] = antiAb_id; 
+reactionsValues[98][1] = 1.0000000000; 
+reactionsSpecies[99][0] = AbetaDimer_antiAb_id; 
+reactionsValues[99][0] = -1.0000000000; 
+reactionsSpecies[99][1] = antiAb_id; 
+reactionsValues[99][1] = 1.0000000000; 
+reactionsSpecies[100][0] = GliaI_id; 
+reactionsValues[100][0] = -1.0000000000; 
+reactionsSpecies[100][1] = AbetaPlaque_id; 
+reactionsValues[100][1] = -1.0000000000; 
+reactionsSpecies[100][2] = GliaM1_id; 
+reactionsValues[100][2] = 1.0000000000; 
+reactionsSpecies[100][3] = AbetaPlaque_id; 
+reactionsValues[100][3] = 1.0000000000; 
+reactionsSpecies[101][0] = GliaM1_id; 
+reactionsValues[101][0] = -1.0000000000; 
+reactionsSpecies[101][1] = AbetaPlaque_id; 
+reactionsValues[101][1] = -1.0000000000; 
+reactionsSpecies[101][2] = GliaM2_id; 
+reactionsValues[101][2] = 1.0000000000; 
+reactionsSpecies[101][3] = AbetaPlaque_id; 
+reactionsValues[101][3] = 1.0000000000; 
+reactionsSpecies[102][0] = GliaM2_id; 
+reactionsValues[102][0] = -1.0000000000; 
+reactionsSpecies[102][1] = antiAb_id; 
+reactionsValues[102][1] = -1.0000000000; 
+reactionsSpecies[102][2] = GliaA_id; 
+reactionsValues[102][2] = 1.0000000000; 
+reactionsSpecies[102][3] = antiAb_id; 
+reactionsValues[102][3] = 1.0000000000; 
+reactionsSpecies[103][0] = GliaA_id; 
+reactionsValues[103][0] = -1.0000000000; 
+reactionsSpecies[103][1] = GliaM2_id; 
+reactionsValues[103][1] = 1.0000000000; 
+reactionsSpecies[104][0] = GliaM2_id; 
+reactionsValues[104][0] = -1.0000000000; 
+reactionsSpecies[104][1] = GliaM1_id; 
+reactionsValues[104][1] = 1.0000000000; 
+reactionsSpecies[105][0] = GliaM1_id; 
+reactionsValues[105][0] = -1.0000000000; 
+reactionsSpecies[105][1] = GliaI_id; 
+reactionsValues[105][1] = 1.0000000000; 
+reactionsSpecies[106][0] = AbetaPlaque_id; 
+reactionsValues[106][0] = -1.0000000000; 
+reactionsSpecies[106][1] = GliaA_id; 
+reactionsValues[106][1] = -1.0000000000; 
+reactionsSpecies[106][2] = AbetaPlaque_GliaA_id; 
+reactionsValues[106][2] = 1.0000000000; 
+reactionsSpecies[107][0] = AbetaPlaque_GliaA_id; 
+reactionsValues[107][0] = -1.0000000000; 
+reactionsSpecies[107][1] = AbetaPlaque_id; 
+reactionsValues[107][1] = 1.0000000000; 
+reactionsSpecies[107][2] = GliaA_id; 
+reactionsValues[107][2] = 1.0000000000; 
+reactionsSpecies[108][0] = AbetaPlaque_GliaA_id; 
+reactionsValues[108][0] = -1.0000000000; 
+reactionsSpecies[108][1] = GliaA_id; 
+reactionsValues[108][1] = 1.0000000000; 
+reactionsSpecies[108][2] = degAbetaGlia_id; 
+reactionsValues[108][2] = 1.0000000000; 
+reactionsSpecies[109][0] = AbetaPlaque_GliaA_id; 
+reactionsValues[109][0] = -1.0000000000; 
+reactionsSpecies[109][1] = AbetaPlaque_GliaA_id; 
+reactionsValues[109][1] = 1.0000000000; 
+reactionsSpecies[109][2] = ROS_id; 
+reactionsValues[109][2] = 1.0000000000; 
+reactionsSpecies[110][0] = antiAb_id; 
+reactionsValues[110][0] = -1.0000000000; 
+reactionsSpecies[111][0] = ROS_id; 
+reactionsValues[111][0] = -1.0000000000; 
+while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){

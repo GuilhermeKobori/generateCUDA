@@ -109,14 +109,33 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(curandCall, "CUDA_CALL(cudaMalloc((void **)&devStates, %d * sizeof(curandState)));\n", simulations);
 	fprintf(curandCall, "initCurand<<<1, %d>>>(devStates, SEED);\n", simulations);
 
-	fprintf(defineSpeciesUpdates, "#define speciesUpdate(i) \\\n");
-	fprintf(defineSpeciesUpdates, "switch (i) { \\\n");
+	int maxReactants = 0;
+	int maxProducts = 0;
+	for (int i = 0; i < Model_getNumReactions(m); i++)
+	{
+		if (maxReactants < Reaction_getNumReactants(Model_getReaction(m, i))) {
+			maxReactants = Reaction_getNumReactants(Model_getReaction(m, i));
+		}
+		if (maxProducts < Reaction_getNumProducts(Model_getReaction(m, i))) {
+			maxProducts = Reaction_getNumProducts(Model_getReaction(m, i));
+		}
+	}
+
+	fprintf(defineSpeciesUpdates, "int reactionsSpecies[%d][%d];\nint reactionsValues[%d][%d];\n", Model_getNumReactions(m), maxReactants+maxProducts, Model_getNumReactions(m), maxReactants + maxProducts);
+	fprintf(defineSpeciesUpdates, "for(int i = 0; i < %d; i++){\n", Model_getNumReactions(m));
+	fprintf(defineSpeciesUpdates, "for(int j = 0; j < %d; j++){\n", maxReactants + maxProducts);
+	fprintf(defineSpeciesUpdates, "reactionsSpecies[i][j] = -1;\n");
+	fprintf(defineSpeciesUpdates, "reactionsValues[i][j] = 0;\n");
+	fprintf(defineSpeciesUpdates, "}\n");
+	fprintf(defineSpeciesUpdates, "}\n");
 
 	//get list of reactions and formulas
 	KineticLaw_t *kl;
 
+	int index;
 	for (int i = 0; i < Model_getNumReactions(m); i++)
 	{
+		index = 0;
 		//save formulas processing time vs memory size
 		if (Reaction_isSetKineticLaw(Model_getReaction(m, i)))
 		{
@@ -125,14 +144,14 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 			{
 				fprintf(updatePropencities, "p[%d] = %s; \n", i, SBML_formulaToString(KineticLaw_getMath(kl)));
 
-				fprintf(defineSpeciesUpdates, "case %d: \\\n", i);
-
 				//reactants
 				ListOf_t* reactants = Reaction_getListOfReactants(Model_getReaction(m, i));
 				for (int k = 0; k < Reaction_getNumReactants(Model_getReaction(m, i)); k++) {
 					SpeciesReference_t* reactant = ListOf_get(reactants, k);
 					if (Species_getConstant(ListOfSpecies_getById(species, SpeciesReference_getSpecies(reactant))) == 0) {
-						fprintf(defineSpeciesUpdates, "%s -= %lf; \\\n", SpeciesReference_getSpecies(reactant), SpeciesReference_getStoichiometry(reactant));
+						fprintf(defineSpeciesUpdates, "reactionsSpecies[%d][%d] = %s_id; \n", i, index, SpeciesReference_getSpecies(reactant));
+						fprintf(defineSpeciesUpdates, "reactionsValues[%d][%d] = -%.10lf; \n", i, index, SpeciesReference_getStoichiometry(reactant));
+						index++;
 					}
 				}
 
@@ -141,22 +160,21 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 				for (int k = 0; k < Reaction_getNumProducts(Model_getReaction(m, i)); k++) {
 					SpeciesReference_t* product = ListOf_get(products, k);
 					if (Species_getConstant(ListOfSpecies_getById(species, SpeciesReference_getSpecies(product))) == 0) {
-						fprintf(defineSpeciesUpdates, "%s += %lf; \\\n", SpeciesReference_getSpecies(product), SpeciesReference_getStoichiometry(product));
+						fprintf(defineSpeciesUpdates, "reactionsSpecies[%d][%d] = %s_id; \n", i, index, SpeciesReference_getSpecies(product));
+						fprintf(defineSpeciesUpdates, "reactionsValues[%d][%d] = %.10lf; \n", i, index, SpeciesReference_getStoichiometry(product));
+						index++;
 					}
 				}
 
-				fprintf(defineSpeciesUpdates, "break; \\\n");
-
-
 				for (int j = 0; j < KineticLaw_getNumParameters(kl); j++) {
 					Parameter_t* p = KineticLaw_getParameter(kl, j);
-					fprintf(defineConstants, "#define %s %lf\n", Parameter_getId(p), Parameter_getValue(p));
+					fprintf(defineConstants, "#define %s %.10lf\n", Parameter_getId(p), Parameter_getValue(p));
 				}
 			}
 		}
 	}
 
-	fprintf(defineSpeciesUpdates, "} \\\n");
+	fprintf(defineSpeciesUpdates, "while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){\n");
 
 	//get initial values and constants
 
@@ -182,7 +200,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(kernelCall, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime / SEGMENT_SIZE));
 	//This feels weird TODO invenstigate better ways?
 	int segmentSize = SEGMENT_SIZE;
-	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %lf, %lf, %d", simulations, step, endTime, segmentSize);
+	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %.10lf, %.10lf, %d", simulations, step, endTime, segmentSize);
 
 	fprintf(receiveData, "\n\ncudaStatus = cudaMemcpy(output, dev_output, %d*%d*sizeof(float), cudaMemcpyDeviceToHost);\n", (int)ceil(endTime / step), Model_getNumSpecies(m));
 	fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
@@ -190,15 +208,17 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(freeDevice, "Error:\n");
 	fprintf(freeDevice, "cudaFree(dev_output);\n");
 
+	fprintf(kernelVariablesInit, "float species[%d];\n", Model_getNumSpecies(m));
+
 	for (int i = 0; i < Model_getNumSpecies(m); i++) {
 		Species_t* s = ListOf_get(species, i);
 		Key = Species_getId(s);
 		Value = Species_getInitialAmount(s);
-		fprintf(initializeSpecies, "float %s = %lf;\n", Key, Value);
+		fprintf(initializeSpecies, "float host_%s = %.10lf;\n", Key, Value);
 		fprintf(initializeSpecies, "float* dev_%s;\n", Key);
 		fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&dev_%s, sizeof(float));\n", Key);
 		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
-		fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_%s, &%s, sizeof(float), cudaMemcpyHostToDevice);\n", Key, Key);
+		fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_%s, &host_%s, sizeof(float), cudaMemcpyHostToDevice);\n", Key, Key);
 		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 		fprintf(initializeSpecies, "float* %s_global;\n", Key);
 		fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&%s_global, %d*sizeof(float));\n", Key, simulations);
@@ -208,21 +228,22 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 		fprintf(kernelCall, ", dev_%s, %s_global", Key, Key);
 
-		fprintf(receiveData, "cudaStatus = cudaMemcpy(&%s, dev_%s, sizeof(float), cudaMemcpyDeviceToHost);\n", Key, Key);
+		fprintf(receiveData, "cudaStatus = cudaMemcpy(&host_%s, dev_%s, sizeof(float), cudaMemcpyDeviceToHost);\n", Key, Key);
 		fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
 		fprintf(freeDevice, "cudaFree(dev_%s);\n", Key);
 		fprintf(freeDevice, "cudaFree(%s_global);\n", Key);
 
-		fprintf(kernelVariablesInit, "float %s;\n", Key);
 		fprintf(kernelVariablesInit, "if(numberOfExecutions == 0){\n");
-		fprintf(kernelVariablesInit, "%s = *%s_aux;\n", Key, Key);
+		fprintf(kernelVariablesInit, "species[%d] = *%s_aux;\n", i, Key);
 		fprintf(kernelVariablesInit, "} else {\n");
-		fprintf(kernelVariablesInit, "%s = %s_global[threadIdx.x];\n", Key, Key);
+		fprintf(kernelVariablesInit, "species[%d] = %s_global[threadIdx.x];\n", i, Key);
 		fprintf(kernelVariablesInit, "}\n");
 
-		fprintf(kernelWriteInGlobal, "%s_global[threadIdx.x] = %s;\n", Key, Key);
+		fprintf(kernelWriteInGlobal, "%s_global[threadIdx.x] = species[%d];\n", Key, i);
 
+		fprintf(defineConstants, "#define %s species[%d]\n", Key, i);
+		fprintf(defineConstants, "#define %s_id %d\n", Key, i);
 	}
 
 
@@ -243,9 +264,9 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 
 	fprintf(exportResults, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime/step));
-	fprintf(exportResults, "fprintf(results, \"%%lf\", %lf*i);\n", step);
+	fprintf(exportResults, "fprintf(results, \"%%.10lf\", %.10lf*i);\n", step);
 	fprintf(exportResults, "for(int j = 0; j < %d; j++){\n", Model_getNumSpecies(m));
-	fprintf(exportResults, "fprintf(results, \", %%lf\", output[%d*i+j]/%d);\n", Model_getNumSpecies(m), simulations);
+	fprintf(exportResults, "fprintf(results, \", %%.10lf\", output[%d*i+j]/%d);\n", Model_getNumSpecies(m), simulations);
 	fprintf(exportResults, "}\n");
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 	fprintf(exportResults, "}\n");
@@ -262,12 +283,10 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(kernelFunction, "float sum_p, sum_p_aux, timeStep, random;\n");
 	fprintf(kernelFunction, "float p[%d];\n", Model_getNumReactions(m));
 
-	fprintf(kernelVariablesInit, "while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){\n");
-
 	fprintf(updatePropencities, "if(time >= segmentSize * numberOfExecutions + step * stepCount){\n");
 
 	for (int i = 0; i < Model_getNumSpecies(m); i++) {
-		fprintf(updatePropencities, "atomicAdd(&output[%d*%d*numberOfExecutions + stepCount*%d + %d], %s);\n", Model_getNumSpecies(m), (int)ceil(segmentSize/step), Model_getNumSpecies(m), i, Species_getId(ListOf_get(species, i)));
+		fprintf(updatePropencities, "atomicAdd(&output[%d*%d*numberOfExecutions + stepCount*%d + %d], species[%d]);\n", Model_getNumSpecies(m), (int)ceil(segmentSize/step), Model_getNumSpecies(m), i, i);
 	}
 
 	fprintf(updatePropencities, "stepCount++;\n");
@@ -298,7 +317,10 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "break;\n");
 	fprintf(updatePropencities, "}\n}\n");
 
-	fprintf(updatePropencities, "speciesUpdate(reaction);\n");
+	fprintf(updatePropencities, "for(int i = 0; i < %d; i++){\n", maxReactants+maxProducts);
+	fprintf(updatePropencities, "if(reactionsSpecies[reaction][i] == -1) {break;}\n");
+	fprintf(updatePropencities, "species[reactionsSpecies[reaction][i]] += reactionsValues[reaction][i];\n");
+	fprintf(updatePropencities, "}\n");
 
 	ListOf_t* events = Model_getListOfEvents(m);
 	for (int i = 0; i < Model_getNumEvents(m); i++) {
@@ -323,14 +345,14 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		Compartment_t* c = ListOf_get(compartments, i);
 		Key = Compartment_getId(c);
 		Value = Compartment_getSize(c);
-		fprintf(defineConstants, "#define %s %lf\n", Key, Value);
+		fprintf(defineConstants, "#define %s %.10lf\n", Key, Value);
 	}
 
 	for (int i = 0; i < Model_getNumParameters(m); i++) {
 		Parameter_t* p = ListOf_get(parameters, i);
 		Key = Parameter_getId(p);
 		Value = Parameter_getValue(p);
-		fprintf(defineConstants, "#define %s %lf\n", Key, Value);
+		fprintf(defineConstants, "#define %s %.10lf\n", Key, Value);
 	}
 
 	int streams_closed = fcloseall();
