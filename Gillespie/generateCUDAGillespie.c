@@ -289,7 +289,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "}\n");
 
 	fprintf(updatePropencities, "sum_p = 0");
-	for (int i = 0; i < Model_getNumSpecies(m); i++) {
+	for (int i = 0; i < Model_getNumReactions(m); i++) {
 		fprintf(updatePropencities, " + p[%d]", i);
 	}
 	fprintf(updatePropencities, ";\n");
