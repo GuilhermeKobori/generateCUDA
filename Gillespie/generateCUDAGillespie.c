@@ -109,21 +109,17 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(curandCall, "CUDA_CALL(cudaMalloc((void **)&devStates, %d * sizeof(curandState)));\n", simulations);
 	fprintf(curandCall, "initCurand<<<1, %d>>>(devStates, SEED);\n", simulations);
 
-	int maxReactants = 0;
-	int maxProducts = 0;
+	int maxReactionSpecies = 0;
 	for (int i = 0; i < Model_getNumReactions(m); i++)
 	{
-		if (maxReactants < Reaction_getNumReactants(Model_getReaction(m, i))) {
-			maxReactants = Reaction_getNumReactants(Model_getReaction(m, i));
-		}
-		if (maxProducts < Reaction_getNumProducts(Model_getReaction(m, i))) {
-			maxProducts = Reaction_getNumProducts(Model_getReaction(m, i));
+		if (maxReactionSpecies < Reaction_getNumReactants(Model_getReaction(m, i)) + Reaction_getNumProducts(Model_getReaction(m, i))) {
+			maxReactionSpecies = Reaction_getNumReactants(Model_getReaction(m, i)) + Reaction_getNumProducts(Model_getReaction(m, i));
 		}
 	}
 
-	fprintf(defineSpeciesUpdates, "int reactionsSpecies[%d][%d];\nint reactionsValues[%d][%d];\n", Model_getNumReactions(m), maxReactants+maxProducts, Model_getNumReactions(m), maxReactants + maxProducts);
+	fprintf(defineSpeciesUpdates, "int reactionsSpecies[%d][%d];\nint reactionsValues[%d][%d];\n", Model_getNumReactions(m), maxReactionSpecies, Model_getNumReactions(m), maxReactionSpecies);
 	fprintf(defineSpeciesUpdates, "for(int i = 0; i < %d; i++){\n", Model_getNumReactions(m));
-	fprintf(defineSpeciesUpdates, "for(int j = 0; j < %d; j++){\n", maxReactants + maxProducts);
+	fprintf(defineSpeciesUpdates, "for(int j = 0; j < %d; j++){\n", maxReactionSpecies);
 	fprintf(defineSpeciesUpdates, "reactionsSpecies[i][j] = -1;\n");
 	fprintf(defineSpeciesUpdates, "reactionsValues[i][j] = 0;\n");
 	fprintf(defineSpeciesUpdates, "}\n");
@@ -292,12 +288,12 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "stepCount++;\n");
 	fprintf(updatePropencities, "}\n");
 
+	fprintf(updatePropencities, "sum_p = 0");
+	for (int i = 0; i < Model_getNumSpecies(m); i++) {
+		fprintf(updatePropencities, " + p[%d]", i);
+	}
+	fprintf(updatePropencities, ";\n");
 
-
-	fprintf(updatePropencities, "sum_p = 0;\n");
-	fprintf(updatePropencities, "for(int i = 0; i < %d; i++){\n", Model_getNumReactions(m));
-	fprintf(updatePropencities, "sum_p += p[i];\n");
-	fprintf(updatePropencities, "}\n");
 
 	fprintf(updatePropencities, "curandState localState = state[threadIdx.x];\n");
 	fprintf(updatePropencities, "random = curand_uniform(&localState);\n");
@@ -317,7 +313,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "break;\n");
 	fprintf(updatePropencities, "}\n}\n");
 
-	fprintf(updatePropencities, "for(int i = 0; i < %d; i++){\n", maxReactants+maxProducts);
+	fprintf(updatePropencities, "for(int i = 0; i < %d; i++){\n", maxReactionSpecies);
 	fprintf(updatePropencities, "if(reactionsSpecies[reaction][i] == -1) {break;}\n");
 	fprintf(updatePropencities, "species[reactionsSpecies[reaction][i]] += reactionsValues[reaction][i];\n");
 	fprintf(updatePropencities, "}\n");
