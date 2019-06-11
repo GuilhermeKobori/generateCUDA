@@ -199,10 +199,12 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&species_global, %d*%d*sizeof(float));\n", Model_getNumSpecies(m), simulations);
 	fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
 
+	fprintf(initializeSpecies, "float init_species[%d];\n", Model_getNumSpecies(m));
+
 	fprintf(kernelCall, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime / SEGMENT_SIZE));
 	//This feels weird TODO invenstigate better ways?
 	int segmentSize = SEGMENT_SIZE;
-	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %.10lf, %.10lf, %d, species_global", simulations, step, endTime, segmentSize);
+	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %.10lf, %.10lf, %d, species_global);", simulations, step, endTime, segmentSize);
 
 	fprintf(receiveData, "\n\ncudaStatus = cudaMemcpy(output, dev_output, %d*%d*sizeof(float), cudaMemcpyDeviceToHost);\n", (int)ceil(endTime / step), Model_getNumSpecies(m));
 	fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
@@ -218,24 +220,10 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		Species_t* s = ListOf_get(species, i);
 		Key = Species_getId(s);
 		Value = Species_getInitialAmount(s);
-		fprintf(initializeSpecies, "float host_%s = %.10lf;\n", Key, Value);
-		fprintf(initializeSpecies, "float* dev_%s;\n", Key);
-		fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&dev_%s, sizeof(float));\n", Key);
-		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
-		fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_%s, &host_%s, sizeof(float), cudaMemcpyHostToDevice);\n", Key, Key);
-		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
-
-		fprintf(kernelFunction, ", float* %s_aux", Key);
-
-		fprintf(kernelCall, ", dev_%s", Key);
-
-		fprintf(receiveData, "cudaStatus = cudaMemcpy(&host_%s, dev_%s, sizeof(float), cudaMemcpyDeviceToHost);\n", Key, Key);
-		fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
-
-		fprintf(freeDevice, "cudaFree(dev_%s);\n", Key);
+		fprintf(initializeSpecies, "init_species[%d] = %.10lf;\n", i, Value);
 
 		fprintf(kernelVariablesInit, "if(numberOfExecutions == 0){\n");
-		fprintf(kernelVariablesInit, "species[%d] = *%s_aux;\n", i, Key);
+		fprintf(kernelVariablesInit, "species[%d] = species_global[%d];\n", i, i);
 		fprintf(kernelVariablesInit, "} else {\n");
 		fprintf(kernelVariablesInit, "species[%d] = species_global[%s_id*%d + threadIdx.x];\n", i, Key, simulations);
 		fprintf(kernelVariablesInit, "}\n");
@@ -246,6 +234,8 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		fprintf(defineConstants, "#define %s_id %d\n", Key, i);
 	}
 
+	fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(species_global, &init_species, sizeof(float)*%d, cudaMemcpyHostToDevice);\n", Model_getNumSpecies(m));
+	fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
 	fprintf(kernelWriteInGlobal, "state[threadIdx.x] = localState;\n");
 	fprintf(kernelWriteInGlobal, "}\n");
@@ -273,7 +263,6 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(exportResults, "}\n");
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 
-	fprintf(kernelCall, ");\n\n");
 	fprintf(kernelCall, "cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"addKernel launch failed: %%s\\n\", cudaGetErrorString(cudaStatus));goto Error;}\n\n");
 	fprintf(kernelCall, "cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaDeviceSynchronize returned error code %%d after launching addKernel!\\n\", cudaStatus);goto Error;}");
 	fprintf(kernelCall, "}\n");

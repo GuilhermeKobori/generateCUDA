@@ -227,7 +227,7 @@
 #define kbinAbantiAb 0.0000010000
 
 __global__
-void simulate(int numberOfExecutions, float* output, curandState *state, float step, float endTime, float segmentSize, float* Mdm2_aux, float* Mdm2_global, float* p53_aux, float* p53_global, float* Mdm2_p53_aux, float* Mdm2_p53_global, float* Mdm2_mRNA_aux, float* Mdm2_mRNA_global, float* p53_mRNA_aux, float* p53_mRNA_global, float* ATMA_aux, float* ATMA_global, float* ATMI_aux, float* ATMI_global, float* p53_P_aux, float* p53_P_global, float* Mdm2_P_aux, float* Mdm2_P_global, float* IR_aux, float* IR_global, float* ROS_aux, float* ROS_global, float* damDNA_aux, float* damDNA_global, float* E1_aux, float* E1_global, float* E2_aux, float* E2_global, float* E1_Ub_aux, float* E1_Ub_global, float* E2_Ub_aux, float* E2_Ub_global, float* Proteasome_aux, float* Proteasome_global, float* Ub_aux, float* Ub_global, float* p53DUB_aux, float* p53DUB_global, float* Mdm2DUB_aux, float* Mdm2DUB_global, float* DUB_aux, float* DUB_global, float* Mdm2_p53_Ub_aux, float* Mdm2_p53_Ub_global, float* Mdm2_p53_Ub2_aux, float* Mdm2_p53_Ub2_global, float* Mdm2_p53_Ub3_aux, float* Mdm2_p53_Ub3_global, float* Mdm2_p53_Ub4_aux, float* Mdm2_p53_Ub4_global, float* Mdm2_P1_p53_Ub4_aux, float* Mdm2_P1_p53_Ub4_global, float* Mdm2_Ub_aux, float* Mdm2_Ub_global, float* Mdm2_Ub2_aux, float* Mdm2_Ub2_global, float* Mdm2_Ub3_aux, float* Mdm2_Ub3_global, float* Mdm2_Ub4_aux, float* Mdm2_Ub4_global, float* Mdm2_P_Ub_aux, float* Mdm2_P_Ub_global, float* Mdm2_P_Ub2_aux, float* Mdm2_P_Ub2_global, float* Mdm2_P_Ub3_aux, float* Mdm2_P_Ub3_global, float* Mdm2_P_Ub4_aux, float* Mdm2_P_Ub4_global, float* p53_Ub4_Proteasome_aux, float* p53_Ub4_Proteasome_global, float* Mdm2_Ub4_Proteasome_aux, float* Mdm2_Ub4_Proteasome_global, float* Mdm2_P_Ub4_Proteasome_aux, float* Mdm2_P_Ub4_Proteasome_global, float* GSK3b_aux, float* GSK3b_global, float* GSK3b_p53_aux, float* GSK3b_p53_global, float* GSK3b_p53_P_aux, float* GSK3b_p53_P_global, float* Abeta_aux, float* Abeta_global, float* AggAbeta_Proteasome_aux, float* AggAbeta_Proteasome_global, float* AbetaPlaque_aux, float* AbetaPlaque_global, float* Tau_aux, float* Tau_global, float* Tau_P1_aux, float* Tau_P1_global, float* Tau_P2_aux, float* Tau_P2_global, float* MT_Tau_aux, float* MT_Tau_global, float* AggTau_aux, float* AggTau_global, float* AggTau_Proteasome_aux, float* AggTau_Proteasome_global, float* Proteasome_Tau_aux, float* Proteasome_Tau_global, float* PP1_aux, float* PP1_global, float* NFT_aux, float* NFT_global, float* ATP_aux, float* ATP_global, float* ADP_aux, float* ADP_global, float* AMP_aux, float* AMP_global, float* AbetaDimer_aux, float* AbetaDimer_global, float* AbetaPlaque_GliaA_aux, float* AbetaPlaque_GliaA_global, float* GliaI_aux, float* GliaI_global, float* GliaM1_aux, float* GliaM1_global, float* GliaM2_aux, float* GliaM2_global, float* GliaA_aux, float* GliaA_global, float* antiAb_aux, float* antiAb_global, float* Abeta_antiAb_aux, float* Abeta_antiAb_global, float* AbetaDimer_antiAb_aux, float* AbetaDimer_antiAb_global, float* degAbetaGlia_aux, float* degAbetaGlia_global, float* disaggPlaque1_aux, float* disaggPlaque1_global, float* disaggPlaque2_aux, float* disaggPlaque2_global, float* Source_aux, float* Source_global, float* Sink_aux, float* Sink_global) {
+void simulate(int numberOfExecutions, float* output, curandState *state, float step, float endTime, float segmentSize, float* species_global) {
 	int reaction, stepCount = 0;
 	int indexMin, indexMax;
 	float time = numberOfExecutions * segmentSize;
@@ -237,418 +237,418 @@ void simulate(int numberOfExecutions, float* output, curandState *state, float s
 	if (time >= 345600) { triggerEvent0 = 1; }
 	float species[69];
 	if (numberOfExecutions == 0) {
-		species[0] = *Mdm2_aux;
+		species[0] = species_global[0];
 	}
 	else {
-		species[0] = Mdm2_global[threadIdx.x];
+		species[0] = species_global[Mdm2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[1] = *p53_aux;
+		species[1] = species_global[1];
 	}
 	else {
-		species[1] = p53_global[threadIdx.x];
+		species[1] = species_global[p53_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[2] = *Mdm2_p53_aux;
+		species[2] = species_global[2];
 	}
 	else {
-		species[2] = Mdm2_p53_global[threadIdx.x];
+		species[2] = species_global[Mdm2_p53_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[3] = *Mdm2_mRNA_aux;
+		species[3] = species_global[3];
 	}
 	else {
-		species[3] = Mdm2_mRNA_global[threadIdx.x];
+		species[3] = species_global[Mdm2_mRNA_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[4] = *p53_mRNA_aux;
+		species[4] = species_global[4];
 	}
 	else {
-		species[4] = p53_mRNA_global[threadIdx.x];
+		species[4] = species_global[p53_mRNA_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[5] = *ATMA_aux;
+		species[5] = species_global[5];
 	}
 	else {
-		species[5] = ATMA_global[threadIdx.x];
+		species[5] = species_global[ATMA_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[6] = *ATMI_aux;
+		species[6] = species_global[6];
 	}
 	else {
-		species[6] = ATMI_global[threadIdx.x];
+		species[6] = species_global[ATMI_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[7] = *p53_P_aux;
+		species[7] = species_global[7];
 	}
 	else {
-		species[7] = p53_P_global[threadIdx.x];
+		species[7] = species_global[p53_P_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[8] = *Mdm2_P_aux;
+		species[8] = species_global[8];
 	}
 	else {
-		species[8] = Mdm2_P_global[threadIdx.x];
+		species[8] = species_global[Mdm2_P_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[9] = *IR_aux;
+		species[9] = species_global[9];
 	}
 	else {
-		species[9] = IR_global[threadIdx.x];
+		species[9] = species_global[IR_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[10] = *ROS_aux;
+		species[10] = species_global[10];
 	}
 	else {
-		species[10] = ROS_global[threadIdx.x];
+		species[10] = species_global[ROS_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[11] = *damDNA_aux;
+		species[11] = species_global[11];
 	}
 	else {
-		species[11] = damDNA_global[threadIdx.x];
+		species[11] = species_global[damDNA_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[12] = *E1_aux;
+		species[12] = species_global[12];
 	}
 	else {
-		species[12] = E1_global[threadIdx.x];
+		species[12] = species_global[E1_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[13] = *E2_aux;
+		species[13] = species_global[13];
 	}
 	else {
-		species[13] = E2_global[threadIdx.x];
+		species[13] = species_global[E2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[14] = *E1_Ub_aux;
+		species[14] = species_global[14];
 	}
 	else {
-		species[14] = E1_Ub_global[threadIdx.x];
+		species[14] = species_global[E1_Ub_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[15] = *E2_Ub_aux;
+		species[15] = species_global[15];
 	}
 	else {
-		species[15] = E2_Ub_global[threadIdx.x];
+		species[15] = species_global[E2_Ub_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[16] = *Proteasome_aux;
+		species[16] = species_global[16];
 	}
 	else {
-		species[16] = Proteasome_global[threadIdx.x];
+		species[16] = species_global[Proteasome_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[17] = *Ub_aux;
+		species[17] = species_global[17];
 	}
 	else {
-		species[17] = Ub_global[threadIdx.x];
+		species[17] = species_global[Ub_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[18] = *p53DUB_aux;
+		species[18] = species_global[18];
 	}
 	else {
-		species[18] = p53DUB_global[threadIdx.x];
+		species[18] = species_global[p53DUB_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[19] = *Mdm2DUB_aux;
+		species[19] = species_global[19];
 	}
 	else {
-		species[19] = Mdm2DUB_global[threadIdx.x];
+		species[19] = species_global[Mdm2DUB_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[20] = *DUB_aux;
+		species[20] = species_global[20];
 	}
 	else {
-		species[20] = DUB_global[threadIdx.x];
+		species[20] = species_global[DUB_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[21] = *Mdm2_p53_Ub_aux;
+		species[21] = species_global[21];
 	}
 	else {
-		species[21] = Mdm2_p53_Ub_global[threadIdx.x];
+		species[21] = species_global[Mdm2_p53_Ub_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[22] = *Mdm2_p53_Ub2_aux;
+		species[22] = species_global[22];
 	}
 	else {
-		species[22] = Mdm2_p53_Ub2_global[threadIdx.x];
+		species[22] = species_global[Mdm2_p53_Ub2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[23] = *Mdm2_p53_Ub3_aux;
+		species[23] = species_global[23];
 	}
 	else {
-		species[23] = Mdm2_p53_Ub3_global[threadIdx.x];
+		species[23] = species_global[Mdm2_p53_Ub3_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[24] = *Mdm2_p53_Ub4_aux;
+		species[24] = species_global[24];
 	}
 	else {
-		species[24] = Mdm2_p53_Ub4_global[threadIdx.x];
+		species[24] = species_global[Mdm2_p53_Ub4_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[25] = *Mdm2_P1_p53_Ub4_aux;
+		species[25] = species_global[25];
 	}
 	else {
-		species[25] = Mdm2_P1_p53_Ub4_global[threadIdx.x];
+		species[25] = species_global[Mdm2_P1_p53_Ub4_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[26] = *Mdm2_Ub_aux;
+		species[26] = species_global[26];
 	}
 	else {
-		species[26] = Mdm2_Ub_global[threadIdx.x];
+		species[26] = species_global[Mdm2_Ub_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[27] = *Mdm2_Ub2_aux;
+		species[27] = species_global[27];
 	}
 	else {
-		species[27] = Mdm2_Ub2_global[threadIdx.x];
+		species[27] = species_global[Mdm2_Ub2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[28] = *Mdm2_Ub3_aux;
+		species[28] = species_global[28];
 	}
 	else {
-		species[28] = Mdm2_Ub3_global[threadIdx.x];
+		species[28] = species_global[Mdm2_Ub3_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[29] = *Mdm2_Ub4_aux;
+		species[29] = species_global[29];
 	}
 	else {
-		species[29] = Mdm2_Ub4_global[threadIdx.x];
+		species[29] = species_global[Mdm2_Ub4_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[30] = *Mdm2_P_Ub_aux;
+		species[30] = species_global[30];
 	}
 	else {
-		species[30] = Mdm2_P_Ub_global[threadIdx.x];
+		species[30] = species_global[Mdm2_P_Ub_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[31] = *Mdm2_P_Ub2_aux;
+		species[31] = species_global[31];
 	}
 	else {
-		species[31] = Mdm2_P_Ub2_global[threadIdx.x];
+		species[31] = species_global[Mdm2_P_Ub2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[32] = *Mdm2_P_Ub3_aux;
+		species[32] = species_global[32];
 	}
 	else {
-		species[32] = Mdm2_P_Ub3_global[threadIdx.x];
+		species[32] = species_global[Mdm2_P_Ub3_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[33] = *Mdm2_P_Ub4_aux;
+		species[33] = species_global[33];
 	}
 	else {
-		species[33] = Mdm2_P_Ub4_global[threadIdx.x];
+		species[33] = species_global[Mdm2_P_Ub4_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[34] = *p53_Ub4_Proteasome_aux;
+		species[34] = species_global[34];
 	}
 	else {
-		species[34] = p53_Ub4_Proteasome_global[threadIdx.x];
+		species[34] = species_global[p53_Ub4_Proteasome_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[35] = *Mdm2_Ub4_Proteasome_aux;
+		species[35] = species_global[35];
 	}
 	else {
-		species[35] = Mdm2_Ub4_Proteasome_global[threadIdx.x];
+		species[35] = species_global[Mdm2_Ub4_Proteasome_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[36] = *Mdm2_P_Ub4_Proteasome_aux;
+		species[36] = species_global[36];
 	}
 	else {
-		species[36] = Mdm2_P_Ub4_Proteasome_global[threadIdx.x];
+		species[36] = species_global[Mdm2_P_Ub4_Proteasome_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[37] = *GSK3b_aux;
+		species[37] = species_global[37];
 	}
 	else {
-		species[37] = GSK3b_global[threadIdx.x];
+		species[37] = species_global[GSK3b_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[38] = *GSK3b_p53_aux;
+		species[38] = species_global[38];
 	}
 	else {
-		species[38] = GSK3b_p53_global[threadIdx.x];
+		species[38] = species_global[GSK3b_p53_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[39] = *GSK3b_p53_P_aux;
+		species[39] = species_global[39];
 	}
 	else {
-		species[39] = GSK3b_p53_P_global[threadIdx.x];
+		species[39] = species_global[GSK3b_p53_P_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[40] = *Abeta_aux;
+		species[40] = species_global[40];
 	}
 	else {
-		species[40] = Abeta_global[threadIdx.x];
+		species[40] = species_global[Abeta_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[41] = *AggAbeta_Proteasome_aux;
+		species[41] = species_global[41];
 	}
 	else {
-		species[41] = AggAbeta_Proteasome_global[threadIdx.x];
+		species[41] = species_global[AggAbeta_Proteasome_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[42] = *AbetaPlaque_aux;
+		species[42] = species_global[42];
 	}
 	else {
-		species[42] = AbetaPlaque_global[threadIdx.x];
+		species[42] = species_global[AbetaPlaque_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[43] = *Tau_aux;
+		species[43] = species_global[43];
 	}
 	else {
-		species[43] = Tau_global[threadIdx.x];
+		species[43] = species_global[Tau_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[44] = *Tau_P1_aux;
+		species[44] = species_global[44];
 	}
 	else {
-		species[44] = Tau_P1_global[threadIdx.x];
+		species[44] = species_global[Tau_P1_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[45] = *Tau_P2_aux;
+		species[45] = species_global[45];
 	}
 	else {
-		species[45] = Tau_P2_global[threadIdx.x];
+		species[45] = species_global[Tau_P2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[46] = *MT_Tau_aux;
+		species[46] = species_global[46];
 	}
 	else {
-		species[46] = MT_Tau_global[threadIdx.x];
+		species[46] = species_global[MT_Tau_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[47] = *AggTau_aux;
+		species[47] = species_global[47];
 	}
 	else {
-		species[47] = AggTau_global[threadIdx.x];
+		species[47] = species_global[AggTau_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[48] = *AggTau_Proteasome_aux;
+		species[48] = species_global[48];
 	}
 	else {
-		species[48] = AggTau_Proteasome_global[threadIdx.x];
+		species[48] = species_global[AggTau_Proteasome_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[49] = *Proteasome_Tau_aux;
+		species[49] = species_global[49];
 	}
 	else {
-		species[49] = Proteasome_Tau_global[threadIdx.x];
+		species[49] = species_global[Proteasome_Tau_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[50] = *PP1_aux;
+		species[50] = species_global[50];
 	}
 	else {
-		species[50] = PP1_global[threadIdx.x];
+		species[50] = species_global[PP1_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[51] = *NFT_aux;
+		species[51] = species_global[51];
 	}
 	else {
-		species[51] = NFT_global[threadIdx.x];
+		species[51] = species_global[NFT_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[52] = *ATP_aux;
+		species[52] = species_global[52];
 	}
 	else {
-		species[52] = ATP_global[threadIdx.x];
+		species[52] = species_global[ATP_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[53] = *ADP_aux;
+		species[53] = species_global[53];
 	}
 	else {
-		species[53] = ADP_global[threadIdx.x];
+		species[53] = species_global[ADP_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[54] = *AMP_aux;
+		species[54] = species_global[54];
 	}
 	else {
-		species[54] = AMP_global[threadIdx.x];
+		species[54] = species_global[AMP_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[55] = *AbetaDimer_aux;
+		species[55] = species_global[55];
 	}
 	else {
-		species[55] = AbetaDimer_global[threadIdx.x];
+		species[55] = species_global[AbetaDimer_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[56] = *AbetaPlaque_GliaA_aux;
+		species[56] = species_global[56];
 	}
 	else {
-		species[56] = AbetaPlaque_GliaA_global[threadIdx.x];
+		species[56] = species_global[AbetaPlaque_GliaA_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[57] = *GliaI_aux;
+		species[57] = species_global[57];
 	}
 	else {
-		species[57] = GliaI_global[threadIdx.x];
+		species[57] = species_global[GliaI_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[58] = *GliaM1_aux;
+		species[58] = species_global[58];
 	}
 	else {
-		species[58] = GliaM1_global[threadIdx.x];
+		species[58] = species_global[GliaM1_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[59] = *GliaM2_aux;
+		species[59] = species_global[59];
 	}
 	else {
-		species[59] = GliaM2_global[threadIdx.x];
+		species[59] = species_global[GliaM2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[60] = *GliaA_aux;
+		species[60] = species_global[60];
 	}
 	else {
-		species[60] = GliaA_global[threadIdx.x];
+		species[60] = species_global[GliaA_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[61] = *antiAb_aux;
+		species[61] = species_global[61];
 	}
 	else {
-		species[61] = antiAb_global[threadIdx.x];
+		species[61] = species_global[antiAb_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[62] = *Abeta_antiAb_aux;
+		species[62] = species_global[62];
 	}
 	else {
-		species[62] = Abeta_antiAb_global[threadIdx.x];
+		species[62] = species_global[Abeta_antiAb_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[63] = *AbetaDimer_antiAb_aux;
+		species[63] = species_global[63];
 	}
 	else {
-		species[63] = AbetaDimer_antiAb_global[threadIdx.x];
+		species[63] = species_global[AbetaDimer_antiAb_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[64] = *degAbetaGlia_aux;
+		species[64] = species_global[64];
 	}
 	else {
-		species[64] = degAbetaGlia_global[threadIdx.x];
+		species[64] = species_global[degAbetaGlia_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[65] = *disaggPlaque1_aux;
+		species[65] = species_global[65];
 	}
 	else {
-		species[65] = disaggPlaque1_global[threadIdx.x];
+		species[65] = species_global[disaggPlaque1_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[66] = *disaggPlaque2_aux;
+		species[66] = species_global[66];
 	}
 	else {
-		species[66] = disaggPlaque2_global[threadIdx.x];
+		species[66] = species_global[disaggPlaque2_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[67] = *Source_aux;
+		species[67] = species_global[67];
 	}
 	else {
-		species[67] = Source_global[threadIdx.x];
+		species[67] = species_global[Source_id * 32 + threadIdx.x];
 	}
 	if (numberOfExecutions == 0) {
-		species[68] = *Sink_aux;
+		species[68] = species_global[68];
 	}
 	else {
-		species[68] = Sink_global[threadIdx.x];
+		species[68] = species_global[Sink_id * 32 + threadIdx.x];
 	}
 	int reactionsSpecies[112][5];
 	int reactionsValues[112][5];
@@ -1590,75 +1590,75 @@ void simulate(int numberOfExecutions, float* output, curandState *state, float s
 		}
 		time += timeStep;
 	}
-	Mdm2_global[threadIdx.x] = species[0];
-	p53_global[threadIdx.x] = species[1];
-	Mdm2_p53_global[threadIdx.x] = species[2];
-	Mdm2_mRNA_global[threadIdx.x] = species[3];
-	p53_mRNA_global[threadIdx.x] = species[4];
-	ATMA_global[threadIdx.x] = species[5];
-	ATMI_global[threadIdx.x] = species[6];
-	p53_P_global[threadIdx.x] = species[7];
-	Mdm2_P_global[threadIdx.x] = species[8];
-	IR_global[threadIdx.x] = species[9];
-	ROS_global[threadIdx.x] = species[10];
-	damDNA_global[threadIdx.x] = species[11];
-	E1_global[threadIdx.x] = species[12];
-	E2_global[threadIdx.x] = species[13];
-	E1_Ub_global[threadIdx.x] = species[14];
-	E2_Ub_global[threadIdx.x] = species[15];
-	Proteasome_global[threadIdx.x] = species[16];
-	Ub_global[threadIdx.x] = species[17];
-	p53DUB_global[threadIdx.x] = species[18];
-	Mdm2DUB_global[threadIdx.x] = species[19];
-	DUB_global[threadIdx.x] = species[20];
-	Mdm2_p53_Ub_global[threadIdx.x] = species[21];
-	Mdm2_p53_Ub2_global[threadIdx.x] = species[22];
-	Mdm2_p53_Ub3_global[threadIdx.x] = species[23];
-	Mdm2_p53_Ub4_global[threadIdx.x] = species[24];
-	Mdm2_P1_p53_Ub4_global[threadIdx.x] = species[25];
-	Mdm2_Ub_global[threadIdx.x] = species[26];
-	Mdm2_Ub2_global[threadIdx.x] = species[27];
-	Mdm2_Ub3_global[threadIdx.x] = species[28];
-	Mdm2_Ub4_global[threadIdx.x] = species[29];
-	Mdm2_P_Ub_global[threadIdx.x] = species[30];
-	Mdm2_P_Ub2_global[threadIdx.x] = species[31];
-	Mdm2_P_Ub3_global[threadIdx.x] = species[32];
-	Mdm2_P_Ub4_global[threadIdx.x] = species[33];
-	p53_Ub4_Proteasome_global[threadIdx.x] = species[34];
-	Mdm2_Ub4_Proteasome_global[threadIdx.x] = species[35];
-	Mdm2_P_Ub4_Proteasome_global[threadIdx.x] = species[36];
-	GSK3b_global[threadIdx.x] = species[37];
-	GSK3b_p53_global[threadIdx.x] = species[38];
-	GSK3b_p53_P_global[threadIdx.x] = species[39];
-	Abeta_global[threadIdx.x] = species[40];
-	AggAbeta_Proteasome_global[threadIdx.x] = species[41];
-	AbetaPlaque_global[threadIdx.x] = species[42];
-	Tau_global[threadIdx.x] = species[43];
-	Tau_P1_global[threadIdx.x] = species[44];
-	Tau_P2_global[threadIdx.x] = species[45];
-	MT_Tau_global[threadIdx.x] = species[46];
-	AggTau_global[threadIdx.x] = species[47];
-	AggTau_Proteasome_global[threadIdx.x] = species[48];
-	Proteasome_Tau_global[threadIdx.x] = species[49];
-	PP1_global[threadIdx.x] = species[50];
-	NFT_global[threadIdx.x] = species[51];
-	ATP_global[threadIdx.x] = species[52];
-	ADP_global[threadIdx.x] = species[53];
-	AMP_global[threadIdx.x] = species[54];
-	AbetaDimer_global[threadIdx.x] = species[55];
-	AbetaPlaque_GliaA_global[threadIdx.x] = species[56];
-	GliaI_global[threadIdx.x] = species[57];
-	GliaM1_global[threadIdx.x] = species[58];
-	GliaM2_global[threadIdx.x] = species[59];
-	GliaA_global[threadIdx.x] = species[60];
-	antiAb_global[threadIdx.x] = species[61];
-	Abeta_antiAb_global[threadIdx.x] = species[62];
-	AbetaDimer_antiAb_global[threadIdx.x] = species[63];
-	degAbetaGlia_global[threadIdx.x] = species[64];
-	disaggPlaque1_global[threadIdx.x] = species[65];
-	disaggPlaque2_global[threadIdx.x] = species[66];
-	Source_global[threadIdx.x] = species[67];
-	Sink_global[threadIdx.x] = species[68];
+	species_global[Mdm2_id * 32 + threadIdx.x] = species[0];
+	species_global[p53_id * 32 + threadIdx.x] = species[1];
+	species_global[Mdm2_p53_id * 32 + threadIdx.x] = species[2];
+	species_global[Mdm2_mRNA_id * 32 + threadIdx.x] = species[3];
+	species_global[p53_mRNA_id * 32 + threadIdx.x] = species[4];
+	species_global[ATMA_id * 32 + threadIdx.x] = species[5];
+	species_global[ATMI_id * 32 + threadIdx.x] = species[6];
+	species_global[p53_P_id * 32 + threadIdx.x] = species[7];
+	species_global[Mdm2_P_id * 32 + threadIdx.x] = species[8];
+	species_global[IR_id * 32 + threadIdx.x] = species[9];
+	species_global[ROS_id * 32 + threadIdx.x] = species[10];
+	species_global[damDNA_id * 32 + threadIdx.x] = species[11];
+	species_global[E1_id * 32 + threadIdx.x] = species[12];
+	species_global[E2_id * 32 + threadIdx.x] = species[13];
+	species_global[E1_Ub_id * 32 + threadIdx.x] = species[14];
+	species_global[E2_Ub_id * 32 + threadIdx.x] = species[15];
+	species_global[Proteasome_id * 32 + threadIdx.x] = species[16];
+	species_global[Ub_id * 32 + threadIdx.x] = species[17];
+	species_global[p53DUB_id * 32 + threadIdx.x] = species[18];
+	species_global[Mdm2DUB_id * 32 + threadIdx.x] = species[19];
+	species_global[DUB_id * 32 + threadIdx.x] = species[20];
+	species_global[Mdm2_p53_Ub_id * 32 + threadIdx.x] = species[21];
+	species_global[Mdm2_p53_Ub2_id * 32 + threadIdx.x] = species[22];
+	species_global[Mdm2_p53_Ub3_id * 32 + threadIdx.x] = species[23];
+	species_global[Mdm2_p53_Ub4_id * 32 + threadIdx.x] = species[24];
+	species_global[Mdm2_P1_p53_Ub4_id * 32 + threadIdx.x] = species[25];
+	species_global[Mdm2_Ub_id * 32 + threadIdx.x] = species[26];
+	species_global[Mdm2_Ub2_id * 32 + threadIdx.x] = species[27];
+	species_global[Mdm2_Ub3_id * 32 + threadIdx.x] = species[28];
+	species_global[Mdm2_Ub4_id * 32 + threadIdx.x] = species[29];
+	species_global[Mdm2_P_Ub_id * 32 + threadIdx.x] = species[30];
+	species_global[Mdm2_P_Ub2_id * 32 + threadIdx.x] = species[31];
+	species_global[Mdm2_P_Ub3_id * 32 + threadIdx.x] = species[32];
+	species_global[Mdm2_P_Ub4_id * 32 + threadIdx.x] = species[33];
+	species_global[p53_Ub4_Proteasome_id * 32 + threadIdx.x] = species[34];
+	species_global[Mdm2_Ub4_Proteasome_id * 32 + threadIdx.x] = species[35];
+	species_global[Mdm2_P_Ub4_Proteasome_id * 32 + threadIdx.x] = species[36];
+	species_global[GSK3b_id * 32 + threadIdx.x] = species[37];
+	species_global[GSK3b_p53_id * 32 + threadIdx.x] = species[38];
+	species_global[GSK3b_p53_P_id * 32 + threadIdx.x] = species[39];
+	species_global[Abeta_id * 32 + threadIdx.x] = species[40];
+	species_global[AggAbeta_Proteasome_id * 32 + threadIdx.x] = species[41];
+	species_global[AbetaPlaque_id * 32 + threadIdx.x] = species[42];
+	species_global[Tau_id * 32 + threadIdx.x] = species[43];
+	species_global[Tau_P1_id * 32 + threadIdx.x] = species[44];
+	species_global[Tau_P2_id * 32 + threadIdx.x] = species[45];
+	species_global[MT_Tau_id * 32 + threadIdx.x] = species[46];
+	species_global[AggTau_id * 32 + threadIdx.x] = species[47];
+	species_global[AggTau_Proteasome_id * 32 + threadIdx.x] = species[48];
+	species_global[Proteasome_Tau_id * 32 + threadIdx.x] = species[49];
+	species_global[PP1_id * 32 + threadIdx.x] = species[50];
+	species_global[NFT_id * 32 + threadIdx.x] = species[51];
+	species_global[ATP_id * 32 + threadIdx.x] = species[52];
+	species_global[ADP_id * 32 + threadIdx.x] = species[53];
+	species_global[AMP_id * 32 + threadIdx.x] = species[54];
+	species_global[AbetaDimer_id * 32 + threadIdx.x] = species[55];
+	species_global[AbetaPlaque_GliaA_id * 32 + threadIdx.x] = species[56];
+	species_global[GliaI_id * 32 + threadIdx.x] = species[57];
+	species_global[GliaM1_id * 32 + threadIdx.x] = species[58];
+	species_global[GliaM2_id * 32 + threadIdx.x] = species[59];
+	species_global[GliaA_id * 32 + threadIdx.x] = species[60];
+	species_global[antiAb_id * 32 + threadIdx.x] = species[61];
+	species_global[Abeta_antiAb_id * 32 + threadIdx.x] = species[62];
+	species_global[AbetaDimer_antiAb_id * 32 + threadIdx.x] = species[63];
+	species_global[degAbetaGlia_id * 32 + threadIdx.x] = species[64];
+	species_global[disaggPlaque1_id * 32 + threadIdx.x] = species[65];
+	species_global[disaggPlaque2_id * 32 + threadIdx.x] = species[66];
+	species_global[Source_id * 32 + threadIdx.x] = species[67];
+	species_global[Sink_id * 32 + threadIdx.x] = species[68];
 	state[threadIdx.x] = localState;
 }
 
@@ -1680,778 +1680,92 @@ int main()
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
 	cudaStatus = cudaMemcpy(dev_output, output, 167 * 69 * sizeof(float), cudaMemcpyHostToDevice);
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float host_Mdm2 = 5.0000000000;
-	float* dev_Mdm2;
-	cudaStatus = cudaMalloc(&dev_Mdm2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2, &host_Mdm2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_global;
-	cudaStatus = cudaMalloc(&Mdm2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_p53 = 5.0000000000;
-	float* dev_p53;
-	cudaStatus = cudaMalloc(&dev_p53, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_p53, &host_p53, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* p53_global;
-	cudaStatus = cudaMalloc(&p53_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_p53 = 95.0000000000;
-	float* dev_Mdm2_p53;
-	cudaStatus = cudaMalloc(&dev_Mdm2_p53, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_p53, &host_Mdm2_p53, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_p53_global;
-	cudaStatus = cudaMalloc(&Mdm2_p53_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_mRNA = 10.0000000000;
-	float* dev_Mdm2_mRNA;
-	cudaStatus = cudaMalloc(&dev_Mdm2_mRNA, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_mRNA, &host_Mdm2_mRNA, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_mRNA_global;
-	cudaStatus = cudaMalloc(&Mdm2_mRNA_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_p53_mRNA = 10.0000000000;
-	float* dev_p53_mRNA;
-	cudaStatus = cudaMalloc(&dev_p53_mRNA, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_p53_mRNA, &host_p53_mRNA, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* p53_mRNA_global;
-	cudaStatus = cudaMalloc(&p53_mRNA_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_ATMA = 0.0000000000;
-	float* dev_ATMA;
-	cudaStatus = cudaMalloc(&dev_ATMA, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_ATMA, &host_ATMA, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* ATMA_global;
-	cudaStatus = cudaMalloc(&ATMA_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_ATMI = 200.0000000000;
-	float* dev_ATMI;
-	cudaStatus = cudaMalloc(&dev_ATMI, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_ATMI, &host_ATMI, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* ATMI_global;
-	cudaStatus = cudaMalloc(&ATMI_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_p53_P = 0.0000000000;
-	float* dev_p53_P;
-	cudaStatus = cudaMalloc(&dev_p53_P, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_p53_P, &host_p53_P, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* p53_P_global;
-	cudaStatus = cudaMalloc(&p53_P_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_P = 0.0000000000;
-	float* dev_Mdm2_P;
-	cudaStatus = cudaMalloc(&dev_Mdm2_P, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_P, &host_Mdm2_P, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_P_global;
-	cudaStatus = cudaMalloc(&Mdm2_P_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_IR = 0.0000000000;
-	float* dev_IR;
-	cudaStatus = cudaMalloc(&dev_IR, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_IR, &host_IR, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* IR_global;
-	cudaStatus = cudaMalloc(&IR_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_ROS = 0.0000000000;
-	float* dev_ROS;
-	cudaStatus = cudaMalloc(&dev_ROS, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_ROS, &host_ROS, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* ROS_global;
-	cudaStatus = cudaMalloc(&ROS_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_damDNA = 0.0000000000;
-	float* dev_damDNA;
-	cudaStatus = cudaMalloc(&dev_damDNA, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_damDNA, &host_damDNA, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* damDNA_global;
-	cudaStatus = cudaMalloc(&damDNA_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_E1 = 100.0000000000;
-	float* dev_E1;
-	cudaStatus = cudaMalloc(&dev_E1, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_E1, &host_E1, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* E1_global;
-	cudaStatus = cudaMalloc(&E1_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_E2 = 100.0000000000;
-	float* dev_E2;
-	cudaStatus = cudaMalloc(&dev_E2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_E2, &host_E2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* E2_global;
-	cudaStatus = cudaMalloc(&E2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_E1_Ub = 0.0000000000;
-	float* dev_E1_Ub;
-	cudaStatus = cudaMalloc(&dev_E1_Ub, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_E1_Ub, &host_E1_Ub, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* E1_Ub_global;
-	cudaStatus = cudaMalloc(&E1_Ub_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_E2_Ub = 0.0000000000;
-	float* dev_E2_Ub;
-	cudaStatus = cudaMalloc(&dev_E2_Ub, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_E2_Ub, &host_E2_Ub, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* E2_Ub_global;
-	cudaStatus = cudaMalloc(&E2_Ub_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Proteasome = 500.0000000000;
-	float* dev_Proteasome;
-	cudaStatus = cudaMalloc(&dev_Proteasome, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Proteasome, &host_Proteasome, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Proteasome_global;
-	cudaStatus = cudaMalloc(&Proteasome_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Ub = 4000.0000000000;
-	float* dev_Ub;
-	cudaStatus = cudaMalloc(&dev_Ub, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Ub, &host_Ub, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Ub_global;
-	cudaStatus = cudaMalloc(&Ub_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_p53DUB = 200.0000000000;
-	float* dev_p53DUB;
-	cudaStatus = cudaMalloc(&dev_p53DUB, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_p53DUB, &host_p53DUB, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* p53DUB_global;
-	cudaStatus = cudaMalloc(&p53DUB_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2DUB = 200.0000000000;
-	float* dev_Mdm2DUB;
-	cudaStatus = cudaMalloc(&dev_Mdm2DUB, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2DUB, &host_Mdm2DUB, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2DUB_global;
-	cudaStatus = cudaMalloc(&Mdm2DUB_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_DUB = 200.0000000000;
-	float* dev_DUB;
-	cudaStatus = cudaMalloc(&dev_DUB, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_DUB, &host_DUB, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* DUB_global;
-	cudaStatus = cudaMalloc(&DUB_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_p53_Ub = 0.0000000000;
-	float* dev_Mdm2_p53_Ub;
-	cudaStatus = cudaMalloc(&dev_Mdm2_p53_Ub, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_p53_Ub, &host_Mdm2_p53_Ub, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_p53_Ub_global;
-	cudaStatus = cudaMalloc(&Mdm2_p53_Ub_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_p53_Ub2 = 0.0000000000;
-	float* dev_Mdm2_p53_Ub2;
-	cudaStatus = cudaMalloc(&dev_Mdm2_p53_Ub2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_p53_Ub2, &host_Mdm2_p53_Ub2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_p53_Ub2_global;
-	cudaStatus = cudaMalloc(&Mdm2_p53_Ub2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_p53_Ub3 = 0.0000000000;
-	float* dev_Mdm2_p53_Ub3;
-	cudaStatus = cudaMalloc(&dev_Mdm2_p53_Ub3, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_p53_Ub3, &host_Mdm2_p53_Ub3, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_p53_Ub3_global;
-	cudaStatus = cudaMalloc(&Mdm2_p53_Ub3_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_p53_Ub4 = 0.0000000000;
-	float* dev_Mdm2_p53_Ub4;
-	cudaStatus = cudaMalloc(&dev_Mdm2_p53_Ub4, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_p53_Ub4, &host_Mdm2_p53_Ub4, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_p53_Ub4_global;
-	cudaStatus = cudaMalloc(&Mdm2_p53_Ub4_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_P1_p53_Ub4 = 0.0000000000;
-	float* dev_Mdm2_P1_p53_Ub4;
-	cudaStatus = cudaMalloc(&dev_Mdm2_P1_p53_Ub4, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_P1_p53_Ub4, &host_Mdm2_P1_p53_Ub4, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_P1_p53_Ub4_global;
-	cudaStatus = cudaMalloc(&Mdm2_P1_p53_Ub4_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_Ub = 0.0000000000;
-	float* dev_Mdm2_Ub;
-	cudaStatus = cudaMalloc(&dev_Mdm2_Ub, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_Ub, &host_Mdm2_Ub, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_Ub_global;
-	cudaStatus = cudaMalloc(&Mdm2_Ub_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_Ub2 = 0.0000000000;
-	float* dev_Mdm2_Ub2;
-	cudaStatus = cudaMalloc(&dev_Mdm2_Ub2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_Ub2, &host_Mdm2_Ub2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_Ub2_global;
-	cudaStatus = cudaMalloc(&Mdm2_Ub2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_Ub3 = 0.0000000000;
-	float* dev_Mdm2_Ub3;
-	cudaStatus = cudaMalloc(&dev_Mdm2_Ub3, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_Ub3, &host_Mdm2_Ub3, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_Ub3_global;
-	cudaStatus = cudaMalloc(&Mdm2_Ub3_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_Ub4 = 0.0000000000;
-	float* dev_Mdm2_Ub4;
-	cudaStatus = cudaMalloc(&dev_Mdm2_Ub4, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_Ub4, &host_Mdm2_Ub4, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_Ub4_global;
-	cudaStatus = cudaMalloc(&Mdm2_Ub4_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_P_Ub = 0.0000000000;
-	float* dev_Mdm2_P_Ub;
-	cudaStatus = cudaMalloc(&dev_Mdm2_P_Ub, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_P_Ub, &host_Mdm2_P_Ub, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_P_Ub_global;
-	cudaStatus = cudaMalloc(&Mdm2_P_Ub_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_P_Ub2 = 0.0000000000;
-	float* dev_Mdm2_P_Ub2;
-	cudaStatus = cudaMalloc(&dev_Mdm2_P_Ub2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_P_Ub2, &host_Mdm2_P_Ub2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_P_Ub2_global;
-	cudaStatus = cudaMalloc(&Mdm2_P_Ub2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_P_Ub3 = 0.0000000000;
-	float* dev_Mdm2_P_Ub3;
-	cudaStatus = cudaMalloc(&dev_Mdm2_P_Ub3, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_P_Ub3, &host_Mdm2_P_Ub3, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_P_Ub3_global;
-	cudaStatus = cudaMalloc(&Mdm2_P_Ub3_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_P_Ub4 = 0.0000000000;
-	float* dev_Mdm2_P_Ub4;
-	cudaStatus = cudaMalloc(&dev_Mdm2_P_Ub4, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_P_Ub4, &host_Mdm2_P_Ub4, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_P_Ub4_global;
-	cudaStatus = cudaMalloc(&Mdm2_P_Ub4_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_p53_Ub4_Proteasome = 0.0000000000;
-	float* dev_p53_Ub4_Proteasome;
-	cudaStatus = cudaMalloc(&dev_p53_Ub4_Proteasome, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_p53_Ub4_Proteasome, &host_p53_Ub4_Proteasome, sizeof(float), cudaMemcpyHostToDevice);
+	float* species_global;
+	cudaStatus = cudaMalloc(&species_global, 69 * 32 * sizeof(float));
+	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
+	float init_species[69];
+	init_species[0] = 5.0000000000;
+	init_species[1] = 5.0000000000;
+	init_species[2] = 95.0000000000;
+	init_species[3] = 10.0000000000;
+	init_species[4] = 10.0000000000;
+	init_species[5] = 0.0000000000;
+	init_species[6] = 200.0000000000;
+	init_species[7] = 0.0000000000;
+	init_species[8] = 0.0000000000;
+	init_species[9] = 0.0000000000;
+	init_species[10] = 0.0000000000;
+	init_species[11] = 0.0000000000;
+	init_species[12] = 100.0000000000;
+	init_species[13] = 100.0000000000;
+	init_species[14] = 0.0000000000;
+	init_species[15] = 0.0000000000;
+	init_species[16] = 500.0000000000;
+	init_species[17] = 4000.0000000000;
+	init_species[18] = 200.0000000000;
+	init_species[19] = 200.0000000000;
+	init_species[20] = 200.0000000000;
+	init_species[21] = 0.0000000000;
+	init_species[22] = 0.0000000000;
+	init_species[23] = 0.0000000000;
+	init_species[24] = 0.0000000000;
+	init_species[25] = 0.0000000000;
+	init_species[26] = 0.0000000000;
+	init_species[27] = 0.0000000000;
+	init_species[28] = 0.0000000000;
+	init_species[29] = 0.0000000000;
+	init_species[30] = 0.0000000000;
+	init_species[31] = 0.0000000000;
+	init_species[32] = 0.0000000000;
+	init_species[33] = 0.0000000000;
+	init_species[34] = 0.0000000000;
+	init_species[35] = 0.0000000000;
+	init_species[36] = 0.0000000000;
+	init_species[37] = 500.0000000000;
+	init_species[38] = 0.0000000000;
+	init_species[39] = 0.0000000000;
+	init_species[40] = 0.0000000000;
+	init_species[41] = 0.0000000000;
+	init_species[42] = 0.0000000000;
+	init_species[43] = 0.0000000000;
+	init_species[44] = 0.0000000000;
+	init_species[45] = 0.0000000000;
+	init_species[46] = 100.0000000000;
+	init_species[47] = 0.0000000000;
+	init_species[48] = 0.0000000000;
+	init_species[49] = 0.0000000000;
+	init_species[50] = 50.0000000000;
+	init_species[51] = 0.0000000000;
+	init_species[52] = 10000.0000000000;
+	init_species[53] = 1000.0000000000;
+	init_species[54] = 1000.0000000000;
+	init_species[55] = 0.0000000000;
+	init_species[56] = 0.0000000000;
+	init_species[57] = 100.0000000000;
+	init_species[58] = 0.0000000000;
+	init_species[59] = 0.0000000000;
+	init_species[60] = 0.0000000000;
+	init_species[61] = 0.0000000000;
+	init_species[62] = 0.0000000000;
+	init_species[63] = 0.0000000000;
+	init_species[64] = 0.0000000000;
+	init_species[65] = 0.0000000000;
+	init_species[66] = 0.0000000000;
+	init_species[67] = 1.0000000000;
+	init_species[68] = 1.0000000000;
+	cudaStatus = cudaMemcpy(species_global, &init_species, sizeof(float) * 69, cudaMemcpyHostToDevice);
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* p53_Ub4_Proteasome_global;
-	cudaStatus = cudaMalloc(&p53_Ub4_Proteasome_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_Ub4_Proteasome = 0.0000000000;
-	float* dev_Mdm2_Ub4_Proteasome;
-	cudaStatus = cudaMalloc(&dev_Mdm2_Ub4_Proteasome, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_Ub4_Proteasome, &host_Mdm2_Ub4_Proteasome, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_Ub4_Proteasome_global;
-	cudaStatus = cudaMalloc(&Mdm2_Ub4_Proteasome_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Mdm2_P_Ub4_Proteasome = 0.0000000000;
-	float* dev_Mdm2_P_Ub4_Proteasome;
-	cudaStatus = cudaMalloc(&dev_Mdm2_P_Ub4_Proteasome, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Mdm2_P_Ub4_Proteasome, &host_Mdm2_P_Ub4_Proteasome, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Mdm2_P_Ub4_Proteasome_global;
-	cudaStatus = cudaMalloc(&Mdm2_P_Ub4_Proteasome_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_GSK3b = 500.0000000000;
-	float* dev_GSK3b;
-	cudaStatus = cudaMalloc(&dev_GSK3b, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_GSK3b, &host_GSK3b, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* GSK3b_global;
-	cudaStatus = cudaMalloc(&GSK3b_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_GSK3b_p53 = 0.0000000000;
-	float* dev_GSK3b_p53;
-	cudaStatus = cudaMalloc(&dev_GSK3b_p53, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_GSK3b_p53, &host_GSK3b_p53, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* GSK3b_p53_global;
-	cudaStatus = cudaMalloc(&GSK3b_p53_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_GSK3b_p53_P = 0.0000000000;
-	float* dev_GSK3b_p53_P;
-	cudaStatus = cudaMalloc(&dev_GSK3b_p53_P, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_GSK3b_p53_P, &host_GSK3b_p53_P, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* GSK3b_p53_P_global;
-	cudaStatus = cudaMalloc(&GSK3b_p53_P_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Abeta = 0.0000000000;
-	float* dev_Abeta;
-	cudaStatus = cudaMalloc(&dev_Abeta, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Abeta, &host_Abeta, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Abeta_global;
-	cudaStatus = cudaMalloc(&Abeta_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AggAbeta_Proteasome = 0.0000000000;
-	float* dev_AggAbeta_Proteasome;
-	cudaStatus = cudaMalloc(&dev_AggAbeta_Proteasome, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AggAbeta_Proteasome, &host_AggAbeta_Proteasome, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AggAbeta_Proteasome_global;
-	cudaStatus = cudaMalloc(&AggAbeta_Proteasome_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AbetaPlaque = 0.0000000000;
-	float* dev_AbetaPlaque;
-	cudaStatus = cudaMalloc(&dev_AbetaPlaque, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AbetaPlaque, &host_AbetaPlaque, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AbetaPlaque_global;
-	cudaStatus = cudaMalloc(&AbetaPlaque_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Tau = 0.0000000000;
-	float* dev_Tau;
-	cudaStatus = cudaMalloc(&dev_Tau, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Tau, &host_Tau, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Tau_global;
-	cudaStatus = cudaMalloc(&Tau_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Tau_P1 = 0.0000000000;
-	float* dev_Tau_P1;
-	cudaStatus = cudaMalloc(&dev_Tau_P1, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Tau_P1, &host_Tau_P1, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Tau_P1_global;
-	cudaStatus = cudaMalloc(&Tau_P1_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Tau_P2 = 0.0000000000;
-	float* dev_Tau_P2;
-	cudaStatus = cudaMalloc(&dev_Tau_P2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Tau_P2, &host_Tau_P2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Tau_P2_global;
-	cudaStatus = cudaMalloc(&Tau_P2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_MT_Tau = 100.0000000000;
-	float* dev_MT_Tau;
-	cudaStatus = cudaMalloc(&dev_MT_Tau, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_MT_Tau, &host_MT_Tau, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* MT_Tau_global;
-	cudaStatus = cudaMalloc(&MT_Tau_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AggTau = 0.0000000000;
-	float* dev_AggTau;
-	cudaStatus = cudaMalloc(&dev_AggTau, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AggTau, &host_AggTau, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AggTau_global;
-	cudaStatus = cudaMalloc(&AggTau_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AggTau_Proteasome = 0.0000000000;
-	float* dev_AggTau_Proteasome;
-	cudaStatus = cudaMalloc(&dev_AggTau_Proteasome, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AggTau_Proteasome, &host_AggTau_Proteasome, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AggTau_Proteasome_global;
-	cudaStatus = cudaMalloc(&AggTau_Proteasome_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Proteasome_Tau = 0.0000000000;
-	float* dev_Proteasome_Tau;
-	cudaStatus = cudaMalloc(&dev_Proteasome_Tau, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Proteasome_Tau, &host_Proteasome_Tau, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Proteasome_Tau_global;
-	cudaStatus = cudaMalloc(&Proteasome_Tau_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_PP1 = 50.0000000000;
-	float* dev_PP1;
-	cudaStatus = cudaMalloc(&dev_PP1, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_PP1, &host_PP1, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* PP1_global;
-	cudaStatus = cudaMalloc(&PP1_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_NFT = 0.0000000000;
-	float* dev_NFT;
-	cudaStatus = cudaMalloc(&dev_NFT, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_NFT, &host_NFT, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* NFT_global;
-	cudaStatus = cudaMalloc(&NFT_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_ATP = 10000.0000000000;
-	float* dev_ATP;
-	cudaStatus = cudaMalloc(&dev_ATP, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_ATP, &host_ATP, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* ATP_global;
-	cudaStatus = cudaMalloc(&ATP_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_ADP = 1000.0000000000;
-	float* dev_ADP;
-	cudaStatus = cudaMalloc(&dev_ADP, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_ADP, &host_ADP, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* ADP_global;
-	cudaStatus = cudaMalloc(&ADP_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AMP = 1000.0000000000;
-	float* dev_AMP;
-	cudaStatus = cudaMalloc(&dev_AMP, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AMP, &host_AMP, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AMP_global;
-	cudaStatus = cudaMalloc(&AMP_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AbetaDimer = 0.0000000000;
-	float* dev_AbetaDimer;
-	cudaStatus = cudaMalloc(&dev_AbetaDimer, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AbetaDimer, &host_AbetaDimer, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AbetaDimer_global;
-	cudaStatus = cudaMalloc(&AbetaDimer_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AbetaPlaque_GliaA = 0.0000000000;
-	float* dev_AbetaPlaque_GliaA;
-	cudaStatus = cudaMalloc(&dev_AbetaPlaque_GliaA, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AbetaPlaque_GliaA, &host_AbetaPlaque_GliaA, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AbetaPlaque_GliaA_global;
-	cudaStatus = cudaMalloc(&AbetaPlaque_GliaA_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_GliaI = 100.0000000000;
-	float* dev_GliaI;
-	cudaStatus = cudaMalloc(&dev_GliaI, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_GliaI, &host_GliaI, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* GliaI_global;
-	cudaStatus = cudaMalloc(&GliaI_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_GliaM1 = 0.0000000000;
-	float* dev_GliaM1;
-	cudaStatus = cudaMalloc(&dev_GliaM1, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_GliaM1, &host_GliaM1, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* GliaM1_global;
-	cudaStatus = cudaMalloc(&GliaM1_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_GliaM2 = 0.0000000000;
-	float* dev_GliaM2;
-	cudaStatus = cudaMalloc(&dev_GliaM2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_GliaM2, &host_GliaM2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* GliaM2_global;
-	cudaStatus = cudaMalloc(&GliaM2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_GliaA = 0.0000000000;
-	float* dev_GliaA;
-	cudaStatus = cudaMalloc(&dev_GliaA, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_GliaA, &host_GliaA, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* GliaA_global;
-	cudaStatus = cudaMalloc(&GliaA_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_antiAb = 0.0000000000;
-	float* dev_antiAb;
-	cudaStatus = cudaMalloc(&dev_antiAb, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_antiAb, &host_antiAb, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* antiAb_global;
-	cudaStatus = cudaMalloc(&antiAb_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Abeta_antiAb = 0.0000000000;
-	float* dev_Abeta_antiAb;
-	cudaStatus = cudaMalloc(&dev_Abeta_antiAb, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Abeta_antiAb, &host_Abeta_antiAb, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Abeta_antiAb_global;
-	cudaStatus = cudaMalloc(&Abeta_antiAb_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_AbetaDimer_antiAb = 0.0000000000;
-	float* dev_AbetaDimer_antiAb;
-	cudaStatus = cudaMalloc(&dev_AbetaDimer_antiAb, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_AbetaDimer_antiAb, &host_AbetaDimer_antiAb, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* AbetaDimer_antiAb_global;
-	cudaStatus = cudaMalloc(&AbetaDimer_antiAb_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_degAbetaGlia = 0.0000000000;
-	float* dev_degAbetaGlia;
-	cudaStatus = cudaMalloc(&dev_degAbetaGlia, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_degAbetaGlia, &host_degAbetaGlia, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* degAbetaGlia_global;
-	cudaStatus = cudaMalloc(&degAbetaGlia_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_disaggPlaque1 = 0.0000000000;
-	float* dev_disaggPlaque1;
-	cudaStatus = cudaMalloc(&dev_disaggPlaque1, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_disaggPlaque1, &host_disaggPlaque1, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* disaggPlaque1_global;
-	cudaStatus = cudaMalloc(&disaggPlaque1_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_disaggPlaque2 = 0.0000000000;
-	float* dev_disaggPlaque2;
-	cudaStatus = cudaMalloc(&dev_disaggPlaque2, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_disaggPlaque2, &host_disaggPlaque2, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* disaggPlaque2_global;
-	cudaStatus = cudaMalloc(&disaggPlaque2_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Source = 1.0000000000;
-	float* dev_Source;
-	cudaStatus = cudaMalloc(&dev_Source, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Source, &host_Source, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Source_global;
-	cudaStatus = cudaMalloc(&Source_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	float host_Sink = 1.0000000000;
-	float* dev_Sink;
-	cudaStatus = cudaMalloc(&dev_Sink, sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_Sink, &host_Sink, sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	float* Sink_global;
-	cudaStatus = cudaMalloc(&Sink_global, 32 * sizeof(float));
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
 	curandState *devStates;
 	CUDA_CALL(cudaMalloc((void **)&devStates, 32 * sizeof(curandState)));
 	initCurand << <1, 32 >> > (devStates, SEED);
 	for (int i = 0; i < 5; i++) {
-		simulate << <1, 32 >> > (i, dev_output, devStates, 60.0000000000, 10000.0000000000, 2000, dev_Mdm2, Mdm2_global, dev_p53, p53_global, dev_Mdm2_p53, Mdm2_p53_global, dev_Mdm2_mRNA, Mdm2_mRNA_global, dev_p53_mRNA, p53_mRNA_global, dev_ATMA, ATMA_global, dev_ATMI, ATMI_global, dev_p53_P, p53_P_global, dev_Mdm2_P, Mdm2_P_global, dev_IR, IR_global, dev_ROS, ROS_global, dev_damDNA, damDNA_global, dev_E1, E1_global, dev_E2, E2_global, dev_E1_Ub, E1_Ub_global, dev_E2_Ub, E2_Ub_global, dev_Proteasome, Proteasome_global, dev_Ub, Ub_global, dev_p53DUB, p53DUB_global, dev_Mdm2DUB, Mdm2DUB_global, dev_DUB, DUB_global, dev_Mdm2_p53_Ub, Mdm2_p53_Ub_global, dev_Mdm2_p53_Ub2, Mdm2_p53_Ub2_global, dev_Mdm2_p53_Ub3, Mdm2_p53_Ub3_global, dev_Mdm2_p53_Ub4, Mdm2_p53_Ub4_global, dev_Mdm2_P1_p53_Ub4, Mdm2_P1_p53_Ub4_global, dev_Mdm2_Ub, Mdm2_Ub_global, dev_Mdm2_Ub2, Mdm2_Ub2_global, dev_Mdm2_Ub3, Mdm2_Ub3_global, dev_Mdm2_Ub4, Mdm2_Ub4_global, dev_Mdm2_P_Ub, Mdm2_P_Ub_global, dev_Mdm2_P_Ub2, Mdm2_P_Ub2_global, dev_Mdm2_P_Ub3, Mdm2_P_Ub3_global, dev_Mdm2_P_Ub4, Mdm2_P_Ub4_global, dev_p53_Ub4_Proteasome, p53_Ub4_Proteasome_global, dev_Mdm2_Ub4_Proteasome, Mdm2_Ub4_Proteasome_global, dev_Mdm2_P_Ub4_Proteasome, Mdm2_P_Ub4_Proteasome_global, dev_GSK3b, GSK3b_global, dev_GSK3b_p53, GSK3b_p53_global, dev_GSK3b_p53_P, GSK3b_p53_P_global, dev_Abeta, Abeta_global, dev_AggAbeta_Proteasome, AggAbeta_Proteasome_global, dev_AbetaPlaque, AbetaPlaque_global, dev_Tau, Tau_global, dev_Tau_P1, Tau_P1_global, dev_Tau_P2, Tau_P2_global, dev_MT_Tau, MT_Tau_global, dev_AggTau, AggTau_global, dev_AggTau_Proteasome, AggTau_Proteasome_global, dev_Proteasome_Tau, Proteasome_Tau_global, dev_PP1, PP1_global, dev_NFT, NFT_global, dev_ATP, ATP_global, dev_ADP, ADP_global, dev_AMP, AMP_global, dev_AbetaDimer, AbetaDimer_global, dev_AbetaPlaque_GliaA, AbetaPlaque_GliaA_global, dev_GliaI, GliaI_global, dev_GliaM1, GliaM1_global, dev_GliaM2, GliaM2_global, dev_GliaA, GliaA_global, dev_antiAb, antiAb_global, dev_Abeta_antiAb, Abeta_antiAb_global, dev_AbetaDimer_antiAb, AbetaDimer_antiAb_global, dev_degAbetaGlia, degAbetaGlia_global, dev_disaggPlaque1, disaggPlaque1_global, dev_disaggPlaque2, disaggPlaque2_global, dev_Source, Source_global, dev_Sink, Sink_global);
-
-		cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "addKernel launch failed: %s\n", cudaGetErrorString(cudaStatus)); goto Error; }
+		simulate << <1, 32 >> > (i, dev_output, devStates, 60.0000000000, 10000.0000000000, 2000, species_global); cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "addKernel launch failed: %s\n", cudaGetErrorString(cudaStatus)); goto Error; }
 
 		cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaDeviceSynchronize returned error code %d after launching addKernel!\n", cudaStatus); goto Error; }
 	}
 
 
 	cudaStatus = cudaMemcpy(output, dev_output, 167 * 69 * sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2, dev_Mdm2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_p53, dev_p53, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_p53, dev_Mdm2_p53, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_mRNA, dev_Mdm2_mRNA, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_p53_mRNA, dev_p53_mRNA, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_ATMA, dev_ATMA, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_ATMI, dev_ATMI, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_p53_P, dev_p53_P, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_P, dev_Mdm2_P, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_IR, dev_IR, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_ROS, dev_ROS, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_damDNA, dev_damDNA, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_E1, dev_E1, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_E2, dev_E2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_E1_Ub, dev_E1_Ub, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_E2_Ub, dev_E2_Ub, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Proteasome, dev_Proteasome, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Ub, dev_Ub, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_p53DUB, dev_p53DUB, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2DUB, dev_Mdm2DUB, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_DUB, dev_DUB, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_p53_Ub, dev_Mdm2_p53_Ub, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_p53_Ub2, dev_Mdm2_p53_Ub2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_p53_Ub3, dev_Mdm2_p53_Ub3, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_p53_Ub4, dev_Mdm2_p53_Ub4, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_P1_p53_Ub4, dev_Mdm2_P1_p53_Ub4, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_Ub, dev_Mdm2_Ub, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_Ub2, dev_Mdm2_Ub2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_Ub3, dev_Mdm2_Ub3, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_Ub4, dev_Mdm2_Ub4, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_P_Ub, dev_Mdm2_P_Ub, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_P_Ub2, dev_Mdm2_P_Ub2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_P_Ub3, dev_Mdm2_P_Ub3, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_P_Ub4, dev_Mdm2_P_Ub4, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_p53_Ub4_Proteasome, dev_p53_Ub4_Proteasome, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_Ub4_Proteasome, dev_Mdm2_Ub4_Proteasome, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Mdm2_P_Ub4_Proteasome, dev_Mdm2_P_Ub4_Proteasome, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_GSK3b, dev_GSK3b, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_GSK3b_p53, dev_GSK3b_p53, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_GSK3b_p53_P, dev_GSK3b_p53_P, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Abeta, dev_Abeta, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AggAbeta_Proteasome, dev_AggAbeta_Proteasome, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AbetaPlaque, dev_AbetaPlaque, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Tau, dev_Tau, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Tau_P1, dev_Tau_P1, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Tau_P2, dev_Tau_P2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_MT_Tau, dev_MT_Tau, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AggTau, dev_AggTau, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AggTau_Proteasome, dev_AggTau_Proteasome, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Proteasome_Tau, dev_Proteasome_Tau, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_PP1, dev_PP1, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_NFT, dev_NFT, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_ATP, dev_ATP, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_ADP, dev_ADP, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AMP, dev_AMP, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AbetaDimer, dev_AbetaDimer, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AbetaPlaque_GliaA, dev_AbetaPlaque_GliaA, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_GliaI, dev_GliaI, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_GliaM1, dev_GliaM1, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_GliaM2, dev_GliaM2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_GliaA, dev_GliaA, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_antiAb, dev_antiAb, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Abeta_antiAb, dev_Abeta_antiAb, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_AbetaDimer_antiAb, dev_AbetaDimer_antiAb, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_degAbetaGlia, dev_degAbetaGlia, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_disaggPlaque1, dev_disaggPlaque1, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_disaggPlaque2, dev_disaggPlaque2, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Source, dev_Source, sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(&host_Sink, dev_Sink, sizeof(float), cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
 	FILE* results = fopen("results.csv", "w");
 	if (results == NULL) {
@@ -2539,144 +1853,7 @@ int main()
 	fprintf(results, "\n");
 Error:
 	cudaFree(dev_output);
-	cudaFree(dev_Mdm2);
-	cudaFree(Mdm2_global);
-	cudaFree(dev_p53);
-	cudaFree(p53_global);
-	cudaFree(dev_Mdm2_p53);
-	cudaFree(Mdm2_p53_global);
-	cudaFree(dev_Mdm2_mRNA);
-	cudaFree(Mdm2_mRNA_global);
-	cudaFree(dev_p53_mRNA);
-	cudaFree(p53_mRNA_global);
-	cudaFree(dev_ATMA);
-	cudaFree(ATMA_global);
-	cudaFree(dev_ATMI);
-	cudaFree(ATMI_global);
-	cudaFree(dev_p53_P);
-	cudaFree(p53_P_global);
-	cudaFree(dev_Mdm2_P);
-	cudaFree(Mdm2_P_global);
-	cudaFree(dev_IR);
-	cudaFree(IR_global);
-	cudaFree(dev_ROS);
-	cudaFree(ROS_global);
-	cudaFree(dev_damDNA);
-	cudaFree(damDNA_global);
-	cudaFree(dev_E1);
-	cudaFree(E1_global);
-	cudaFree(dev_E2);
-	cudaFree(E2_global);
-	cudaFree(dev_E1_Ub);
-	cudaFree(E1_Ub_global);
-	cudaFree(dev_E2_Ub);
-	cudaFree(E2_Ub_global);
-	cudaFree(dev_Proteasome);
-	cudaFree(Proteasome_global);
-	cudaFree(dev_Ub);
-	cudaFree(Ub_global);
-	cudaFree(dev_p53DUB);
-	cudaFree(p53DUB_global);
-	cudaFree(dev_Mdm2DUB);
-	cudaFree(Mdm2DUB_global);
-	cudaFree(dev_DUB);
-	cudaFree(DUB_global);
-	cudaFree(dev_Mdm2_p53_Ub);
-	cudaFree(Mdm2_p53_Ub_global);
-	cudaFree(dev_Mdm2_p53_Ub2);
-	cudaFree(Mdm2_p53_Ub2_global);
-	cudaFree(dev_Mdm2_p53_Ub3);
-	cudaFree(Mdm2_p53_Ub3_global);
-	cudaFree(dev_Mdm2_p53_Ub4);
-	cudaFree(Mdm2_p53_Ub4_global);
-	cudaFree(dev_Mdm2_P1_p53_Ub4);
-	cudaFree(Mdm2_P1_p53_Ub4_global);
-	cudaFree(dev_Mdm2_Ub);
-	cudaFree(Mdm2_Ub_global);
-	cudaFree(dev_Mdm2_Ub2);
-	cudaFree(Mdm2_Ub2_global);
-	cudaFree(dev_Mdm2_Ub3);
-	cudaFree(Mdm2_Ub3_global);
-	cudaFree(dev_Mdm2_Ub4);
-	cudaFree(Mdm2_Ub4_global);
-	cudaFree(dev_Mdm2_P_Ub);
-	cudaFree(Mdm2_P_Ub_global);
-	cudaFree(dev_Mdm2_P_Ub2);
-	cudaFree(Mdm2_P_Ub2_global);
-	cudaFree(dev_Mdm2_P_Ub3);
-	cudaFree(Mdm2_P_Ub3_global);
-	cudaFree(dev_Mdm2_P_Ub4);
-	cudaFree(Mdm2_P_Ub4_global);
-	cudaFree(dev_p53_Ub4_Proteasome);
-	cudaFree(p53_Ub4_Proteasome_global);
-	cudaFree(dev_Mdm2_Ub4_Proteasome);
-	cudaFree(Mdm2_Ub4_Proteasome_global);
-	cudaFree(dev_Mdm2_P_Ub4_Proteasome);
-	cudaFree(Mdm2_P_Ub4_Proteasome_global);
-	cudaFree(dev_GSK3b);
-	cudaFree(GSK3b_global);
-	cudaFree(dev_GSK3b_p53);
-	cudaFree(GSK3b_p53_global);
-	cudaFree(dev_GSK3b_p53_P);
-	cudaFree(GSK3b_p53_P_global);
-	cudaFree(dev_Abeta);
-	cudaFree(Abeta_global);
-	cudaFree(dev_AggAbeta_Proteasome);
-	cudaFree(AggAbeta_Proteasome_global);
-	cudaFree(dev_AbetaPlaque);
-	cudaFree(AbetaPlaque_global);
-	cudaFree(dev_Tau);
-	cudaFree(Tau_global);
-	cudaFree(dev_Tau_P1);
-	cudaFree(Tau_P1_global);
-	cudaFree(dev_Tau_P2);
-	cudaFree(Tau_P2_global);
-	cudaFree(dev_MT_Tau);
-	cudaFree(MT_Tau_global);
-	cudaFree(dev_AggTau);
-	cudaFree(AggTau_global);
-	cudaFree(dev_AggTau_Proteasome);
-	cudaFree(AggTau_Proteasome_global);
-	cudaFree(dev_Proteasome_Tau);
-	cudaFree(Proteasome_Tau_global);
-	cudaFree(dev_PP1);
-	cudaFree(PP1_global);
-	cudaFree(dev_NFT);
-	cudaFree(NFT_global);
-	cudaFree(dev_ATP);
-	cudaFree(ATP_global);
-	cudaFree(dev_ADP);
-	cudaFree(ADP_global);
-	cudaFree(dev_AMP);
-	cudaFree(AMP_global);
-	cudaFree(dev_AbetaDimer);
-	cudaFree(AbetaDimer_global);
-	cudaFree(dev_AbetaPlaque_GliaA);
-	cudaFree(AbetaPlaque_GliaA_global);
-	cudaFree(dev_GliaI);
-	cudaFree(GliaI_global);
-	cudaFree(dev_GliaM1);
-	cudaFree(GliaM1_global);
-	cudaFree(dev_GliaM2);
-	cudaFree(GliaM2_global);
-	cudaFree(dev_GliaA);
-	cudaFree(GliaA_global);
-	cudaFree(dev_antiAb);
-	cudaFree(antiAb_global);
-	cudaFree(dev_Abeta_antiAb);
-	cudaFree(Abeta_antiAb_global);
-	cudaFree(dev_AbetaDimer_antiAb);
-	cudaFree(AbetaDimer_antiAb_global);
-	cudaFree(dev_degAbetaGlia);
-	cudaFree(degAbetaGlia_global);
-	cudaFree(dev_disaggPlaque1);
-	cudaFree(disaggPlaque1_global);
-	cudaFree(dev_disaggPlaque2);
-	cudaFree(disaggPlaque2_global);
-	cudaFree(dev_Source);
-	cudaFree(Source_global);
-	cudaFree(dev_Sink);
-	cudaFree(Sink_global);
+	cudaFree(species_global);
 
 	return 0;
 }
