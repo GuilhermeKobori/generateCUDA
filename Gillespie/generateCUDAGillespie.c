@@ -11,7 +11,7 @@
 #define SQR(x) ((x)*(x))
 #define SQRT(x) pow((x),(.5))
 
-#define SEGMENT_SIZE 1000
+#define SEGMENT_SIZE 2000
 
 void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	//get compartments and initial concentrations in key value pairs
@@ -138,7 +138,8 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 			kl = Reaction_getKineticLaw(Model_getReaction(m, i));
 			if (KineticLaw_isSetMath(kl))
 			{
-				fprintf(updatePropencities, "p[%d] = %s; \n", i, SBML_formulaToString(KineticLaw_getMath(kl)));
+				if (i == 0) fprintf(updatePropencities, "cummulative_p[%d] = %s; \n", i, SBML_formulaToString(KineticLaw_getMath(kl)));
+				else fprintf(updatePropencities, "cummulative_p[%d] = cummulative_p[%d] + %s; \n", i, i - 1, SBML_formulaToString(KineticLaw_getMath(kl)));
 
 				//reactants
 				ListOf_t* reactants = Reaction_getListOfReactants(Model_getReaction(m, i));
@@ -170,6 +171,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		}
 	}
 
+	fprintf(defineSpeciesUpdates, "curandState localState = state[threadIdx.x];\n");
 	fprintf(defineSpeciesUpdates, "while(time < endTime && time < (numberOfExecutions + 1)*segmentSize){\n");
 
 	//get initial values and constants
@@ -188,9 +190,9 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(initializeSpecies, "output[i] = 0;\n");
 	fprintf(initializeSpecies, "}\n");
 
-	fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&dev_output, %d*%d*sizeof(float));\n", (int)ceil(endTime/step), Model_getNumSpecies(m));
+	fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&dev_output, %d*%d*sizeof(float));\n", (int)ceil(endTime / step), Model_getNumSpecies(m));
 	fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
-	fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_output, output, %d*%d*sizeof(float), cudaMemcpyHostToDevice);\n", (int)ceil(endTime/step), Model_getNumSpecies(m));
+	fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_output, output, %d*%d*sizeof(float), cudaMemcpyHostToDevice);\n", (int)ceil(endTime / step), Model_getNumSpecies(m));
 	fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
 	fprintf(kernelCall, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime / SEGMENT_SIZE));
@@ -243,6 +245,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	}
 
 
+	fprintf(kernelWriteInGlobal, "state[threadIdx.x] = localState;\n");
 	fprintf(kernelWriteInGlobal, "}\n");
 
 	fprintf(exportResults, "FILE* results = fopen(\"results.csv\", \"w\");\n");
@@ -259,7 +262,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 
-	fprintf(exportResults, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime/step));
+	fprintf(exportResults, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime / step));
 	fprintf(exportResults, "fprintf(results, \"%%.10lf\", %.10lf*i);\n", step);
 	fprintf(exportResults, "for(int j = 0; j < %d; j++){\n", Model_getNumSpecies(m));
 	fprintf(exportResults, "fprintf(results, \", %%.10lf\", output[%d*i+j]/%d);\n", Model_getNumSpecies(m), simulations);
@@ -275,27 +278,23 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 	fprintf(kernelFunction, ") {\n");
 	fprintf(kernelFunction, "int reaction, stepCount = 0;\n");
+	fprintf(kernelFunction, "int indexMin, indexMax;\n");
 	fprintf(kernelFunction, "float time = numberOfExecutions*segmentSize;\n");
-	fprintf(kernelFunction, "float sum_p, sum_p_aux, timeStep, random;\n");
-	fprintf(kernelFunction, "float p[%d];\n", Model_getNumReactions(m));
+	fprintf(kernelFunction, "float sum_p, timeStep, random;\n");
+	fprintf(kernelFunction, "float cummulative_p[%d];\n", Model_getNumReactions(m));
 
 	fprintf(updatePropencities, "if(time >= segmentSize * numberOfExecutions + step * stepCount){\n");
 
 	for (int i = 0; i < Model_getNumSpecies(m); i++) {
-		fprintf(updatePropencities, "atomicAdd(&output[%d*%d*numberOfExecutions + stepCount*%d + %d], species[%d]);\n", Model_getNumSpecies(m), (int)ceil(segmentSize/step), Model_getNumSpecies(m), i, i);
+		fprintf(updatePropencities, "atomicAdd(&output[%d*%d*numberOfExecutions + stepCount*%d + %d], species[%d]);\n", Model_getNumSpecies(m), (int)ceil(segmentSize / step), Model_getNumSpecies(m), i, i);
 	}
 
 	fprintf(updatePropencities, "stepCount++;\n");
 	fprintf(updatePropencities, "}\n");
 
-	fprintf(updatePropencities, "sum_p = 0");
-	for (int i = 0; i < Model_getNumReactions(m); i++) {
-		fprintf(updatePropencities, " + p[%d]", i);
-	}
-	fprintf(updatePropencities, ";\n");
+	fprintf(updatePropencities, "sum_p = cummulative_p[%d];\n", Model_getNumReactions(m) - 1);
 
 
-	fprintf(updatePropencities, "curandState localState = state[threadIdx.x];\n");
 	fprintf(updatePropencities, "random = curand_uniform(&localState);\n");
 
 	fprintf(updatePropencities, "if(sum_p > 0) timeStep = -log(random)/sum_p;\n");
@@ -303,15 +302,23 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 	fprintf(updatePropencities, "random = curand_uniform(&localState);\n");
 
-	fprintf(updatePropencities, "reaction = -1;\n");
-	fprintf(updatePropencities, "sum_p_aux = 0;\n");
 	fprintf(updatePropencities, "random *= sum_p;\n");
-	fprintf(updatePropencities, "for(int i = 0; i < %d; i++){\n", Model_getNumReactions(m));
-	fprintf(updatePropencities, "sum_p_aux += p[i];\n");
-	fprintf(updatePropencities, "if(random < sum_p_aux){\n");
-	fprintf(updatePropencities, "reaction = i;\n");
+	fprintf(updatePropencities, "indexMin = 0;\n");
+	fprintf(updatePropencities, "indexMax = %d;\n", Model_getNumReactions(m) - 1);
+	fprintf(updatePropencities, "while(indexMax > indexMin){\n");
+	fprintf(updatePropencities, "reaction = (indexMin + indexMax)/2;\n");
+	fprintf(updatePropencities, "if(cummulative_p[reaction - 1] <= random){\n");
+	fprintf(updatePropencities, "if(cummulative_p[reaction] > random){\n");
 	fprintf(updatePropencities, "break;\n");
-	fprintf(updatePropencities, "}\n}\n");
+	fprintf(updatePropencities, "}\n");
+	fprintf(updatePropencities, "else{\n");
+	fprintf(updatePropencities, "indexMin = reaction;\n");
+	fprintf(updatePropencities, "}\n");
+	fprintf(updatePropencities, "}\n");
+	fprintf(updatePropencities, "else{\n");
+	fprintf(updatePropencities, "indexMax = reaction;\n");
+	fprintf(updatePropencities, "}\n");
+	fprintf(updatePropencities, "}\n");
 
 	fprintf(updatePropencities, "for(int i = 0; i < %d; i++){\n", maxReactionSpecies);
 	fprintf(updatePropencities, "if(reactionsSpecies[reaction][i] == -1) {break;}\n");
