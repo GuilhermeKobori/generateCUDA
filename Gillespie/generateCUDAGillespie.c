@@ -177,7 +177,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	//get initial values and constants
 
 	fprintf(kernelFunction, "\n__global__ \n");
-	fprintf(kernelFunction, "void simulate (int numberOfExecutions, float* output, curandState *state, float step, float endTime, float segmentSize");
+	fprintf(kernelFunction, "void simulate (int numberOfExecutions, float* output, curandState *state, float step, float endTime, float segmentSize, float* species_global");
 
 	fprintf(initializeSpecies, "cudaError_t cudaStatus;\n");
 
@@ -195,16 +195,22 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_output, output, %d*%d*sizeof(float), cudaMemcpyHostToDevice);\n", (int)ceil(endTime / step), Model_getNumSpecies(m));
 	fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
+	fprintf(initializeSpecies, "float* species_global;\n");
+	fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&species_global, %d*%d*sizeof(float));\n", Model_getNumSpecies(m), simulations);
+	fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
+
 	fprintf(kernelCall, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime / SEGMENT_SIZE));
 	//This feels weird TODO invenstigate better ways?
 	int segmentSize = SEGMENT_SIZE;
-	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %.10lf, %.10lf, %d", simulations, step, endTime, segmentSize);
+	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %.10lf, %.10lf, %d, species_global", simulations, step, endTime, segmentSize);
 
 	fprintf(receiveData, "\n\ncudaStatus = cudaMemcpy(output, dev_output, %d*%d*sizeof(float), cudaMemcpyDeviceToHost);\n", (int)ceil(endTime / step), Model_getNumSpecies(m));
 	fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
 	fprintf(freeDevice, "Error:\n");
 	fprintf(freeDevice, "cudaFree(dev_output);\n");
+	fprintf(freeDevice, "cudaFree(species_global);\n");
+
 
 	fprintf(kernelVariablesInit, "float species[%d];\n", Model_getNumSpecies(m));
 
@@ -218,27 +224,23 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
 		fprintf(initializeSpecies, "cudaStatus = cudaMemcpy(dev_%s, &host_%s, sizeof(float), cudaMemcpyHostToDevice);\n", Key, Key);
 		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
-		fprintf(initializeSpecies, "float* %s_global;\n", Key);
-		fprintf(initializeSpecies, "cudaStatus = cudaMalloc(&%s_global, %d*sizeof(float));\n", Key, simulations);
-		fprintf(initializeSpecies, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMalloc failed!\");goto Error;}\n");
 
-		fprintf(kernelFunction, ", float* %s_aux, float* %s_global", Key, Key);
+		fprintf(kernelFunction, ", float* %s_aux", Key);
 
-		fprintf(kernelCall, ", dev_%s, %s_global", Key, Key);
+		fprintf(kernelCall, ", dev_%s", Key);
 
 		fprintf(receiveData, "cudaStatus = cudaMemcpy(&host_%s, dev_%s, sizeof(float), cudaMemcpyDeviceToHost);\n", Key, Key);
 		fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
 
 		fprintf(freeDevice, "cudaFree(dev_%s);\n", Key);
-		fprintf(freeDevice, "cudaFree(%s_global);\n", Key);
 
 		fprintf(kernelVariablesInit, "if(numberOfExecutions == 0){\n");
 		fprintf(kernelVariablesInit, "species[%d] = *%s_aux;\n", i, Key);
 		fprintf(kernelVariablesInit, "} else {\n");
-		fprintf(kernelVariablesInit, "species[%d] = %s_global[threadIdx.x];\n", i, Key);
+		fprintf(kernelVariablesInit, "species[%d] = species_global[%s_id*%d + threadIdx.x];\n", i, Key, simulations);
 		fprintf(kernelVariablesInit, "}\n");
 
-		fprintf(kernelWriteInGlobal, "%s_global[threadIdx.x] = species[%d];\n", Key, i);
+		fprintf(kernelWriteInGlobal, "species_global[%s_id*%d + threadIdx.x] = species[%d];\n", Key, simulations, i);
 
 		fprintf(defineConstants, "#define %s species[%d]\n", Key, i);
 		fprintf(defineConstants, "#define %s_id %d\n", Key, i);
