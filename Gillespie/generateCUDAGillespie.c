@@ -298,8 +298,9 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "indexMax = %d;\n", Model_getNumReactions(m) - 1);
 	fprintf(updatePropencities, "while(indexMax > indexMin){\n");
 	fprintf(updatePropencities, "reaction = (indexMin + indexMax)/2;\n");
-	fprintf(updatePropencities, "if(cummulative_p[reaction - 1] <= random){\n");
-	fprintf(updatePropencities, "if(cummulative_p[reaction] > random){\n");
+	fprintf(updatePropencities, "if(cummulative_p[reaction] <= random){\n");
+	fprintf(updatePropencities, "if(cummulative_p[reaction + 1] > random){\n");
+	fprintf(updatePropencities, "reaction++;\n");
 	fprintf(updatePropencities, "break;\n");
 	fprintf(updatePropencities, "}\n");
 	fprintf(updatePropencities, "else{\n");
