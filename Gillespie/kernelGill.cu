@@ -1568,8 +1568,9 @@ void simulate(int numberOfExecutions, float* output, curandState *state, float s
 		indexMax = 111;
 		while (indexMax > indexMin) {
 			reaction = (indexMin + indexMax) / 2;
-			if (cummulative_p[reaction - 1] <= random) {
-				if (cummulative_p[reaction] > random) {
+			if (cummulative_p[reaction] <= random) {
+				if (cummulative_p[reaction + 1] > random) {
+					reaction++;
 					break;
 				}
 				else {
@@ -1672,13 +1673,13 @@ int main()
 	cudaError_t cudaStatus;
 	float* output;
 	float* dev_output;
-	output = (float*)malloc(167 * 69 * sizeof(float));
-	for (int i = 0; i < 167 * 69; i++) {
+	output = (float*)malloc(334 * 69 * sizeof(float));
+	for (int i = 0; i < 334 * 69; i++) {
 		output[i] = 0;
 	}
-	cudaStatus = cudaMalloc(&dev_output, 167 * 69 * sizeof(float));
+	cudaStatus = cudaMalloc(&dev_output, 334 * 69 * sizeof(float));
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_output, output, 167 * 69 * sizeof(float), cudaMemcpyHostToDevice);
+	cudaStatus = cudaMemcpy(dev_output, output, 334 * 69 * sizeof(float), cudaMemcpyHostToDevice);
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
 	float* species_global;
 	cudaStatus = cudaMalloc(&species_global, 69 * 32 * sizeof(float));
@@ -1758,14 +1759,27 @@ int main()
 	curandState *devStates;
 	CUDA_CALL(cudaMalloc((void **)&devStates, 32 * sizeof(curandState)));
 	initCurand << <1, 32 >> > (devStates, SEED);
-	for (int i = 0; i < 5; i++) {
-		simulate << <1, 32 >> > (i, dev_output, devStates, 60.0000000000, 10000.0000000000, 2000, species_global); cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "addKernel launch failed: %s\n", cudaGetErrorString(cudaStatus)); goto Error; }
+	cudaEvent_t start, stop;
+	float milliseconds;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	printf("GO\n");
+	for (int i = 0; i < 10; i++) {
+		cudaEventRecord(start);
+
+		simulate << <1, 32 >> > (i, dev_output, devStates, 60.0000000000, 20000.0000000000, 2000, species_global); cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "addKernel launch failed: %s\n", cudaGetErrorString(cudaStatus)); goto Error; }
 
 		cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaDeviceSynchronize returned error code %d after launching addKernel!\n", cudaStatus); goto Error; }
+		cudaEventRecord(stop);
+		printf("%d\n", i);
+		cudaEventSynchronize(stop);
+		milliseconds = 0;
+		cudaEventElapsedTime(&milliseconds, start, stop);
+		printf("TIME: %lf\n", milliseconds);
 	}
 
 
-	cudaStatus = cudaMemcpy(output, dev_output, 167 * 69 * sizeof(float), cudaMemcpyDeviceToHost);
+	cudaStatus = cudaMemcpy(output, dev_output, 334 * 69 * sizeof(float), cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
 	FILE* results = fopen("results.csv", "w");
 	if (results == NULL) {
@@ -1843,7 +1857,7 @@ int main()
 	fprintf(results, ", Source");
 	fprintf(results, ", Sink");
 	fprintf(results, "\n");
-	for (int i = 0; i < 167; i++) {
+	for (int i = 0; i < 334; i++) {
 		fprintf(results, "%.10lf", 60.0000000000*i);
 		for (int j = 0; j < 69; j++) {
 			fprintf(results, ", %.10lf", output[69 * i + j] / 32);
