@@ -201,10 +201,27 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 	fprintf(initializeSpecies, "float init_species[%d];\n", Model_getNumSpecies(m));
 
+	fprintf(kernelCall, "cudaEvent_t start, stop;\n");
+	fprintf(kernelCall, "float milliseconds;\n");
+	fprintf(kernelCall, "cudaEventCreate(&start);\n");
+	fprintf(kernelCall, "cudaEventCreate(&stop);\n");
+	fprintf(kernelCall, "printf(\"Starting kernel\\n\");\n");
 	fprintf(kernelCall, "for(int i = 0; i < %d; i++){\n", (int)ceil(endTime / SEGMENT_SIZE));
+	fprintf(kernelCall, "cudaEventRecord(start);\n");
+
 	//This feels weird TODO invenstigate better ways?
 	int segmentSize = SEGMENT_SIZE;
 	fprintf(kernelCall, "simulate<<<1, %d>>>(i, dev_output, devStates, %.10lf, %.10lf, %d, species_global);", simulations, step, endTime, segmentSize);
+
+	fprintf(kernelCall, "cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"addKernel launch failed: %%s\\n\", cudaGetErrorString(cudaStatus));goto Error;}\n\n");
+	fprintf(kernelCall, "cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaDeviceSynchronize returned error code %%d after launching addKernel!\\n\", cudaStatus);goto Error;}");
+	fprintf(kernelCall, "cudaEventRecord(stop);\n");
+	fprintf(kernelCall, "printf(\"SEGMENT %%d\\n\", i);\n");
+	fprintf(kernelCall, "cudaEventSynchronize(stop);\n");
+	fprintf(kernelCall, "milliseconds = 0;\n");
+	fprintf(kernelCall, "cudaEventElapsedTime(&milliseconds, start, stop);\n");
+	fprintf(kernelCall, "printf(\"TIME: %%lf\\n\\n\", milliseconds);\n");
+	fprintf(kernelCall, "}\n");
 
 	fprintf(receiveData, "\n\ncudaStatus = cudaMemcpy(output, dev_output, %d*%d*sizeof(float), cudaMemcpyDeviceToHost);\n", (int)ceil(endTime / step), Model_getNumSpecies(m));
 	fprintf(receiveData, "if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaMemcpy failed!\");goto Error;}\n");
@@ -262,10 +279,6 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
 	fprintf(exportResults, "}\n");
 	fprintf(exportResults, "fprintf(results, \"\\n\");\n");
-
-	fprintf(kernelCall, "cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"addKernel launch failed: %%s\\n\", cudaGetErrorString(cudaStatus));goto Error;}\n\n");
-	fprintf(kernelCall, "cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) {fprintf(stderr, \"cudaDeviceSynchronize returned error code %%d after launching addKernel!\\n\", cudaStatus);goto Error;}");
-	fprintf(kernelCall, "}\n");
 
 	fprintf(kernelFunction, ") {\n");
 	fprintf(kernelFunction, "int reaction, stepCount = 0;\n");
