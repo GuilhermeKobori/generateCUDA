@@ -11,7 +11,7 @@
 #define SQR(x) ((x)*(x))
 #define SQRT(x) pow((x),(.5))
 
-#define SEGMENT_SIZE 2000
+#define SEGMENT_SIZE 10000
 
 void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	//get compartments and initial concentrations in key value pairs
@@ -201,6 +201,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 	fprintf(initializeSpecies, "float init_species[%d];\n", Model_getNumSpecies(m));
 
+	fprintf(kernelCall, "clock_t begin = clock();\n");
 	fprintf(kernelCall, "cudaEvent_t start, stop;\n");
 	fprintf(kernelCall, "float milliseconds;\n");
 	fprintf(kernelCall, "cudaEventCreate(&start);\n");
@@ -263,6 +264,10 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(exportResults, "exit(1);\n");
 	fprintf(exportResults, "}\n");
 
+	fprintf(exportResults, "clock_t end = clock();\n");
+	fprintf(exportResults, "double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;\n");
+	fprintf(exportResults, "printf(\"TOTAL EXECUTION TIME : %%lf\\n\", time_spent);\n");
+
 	fprintf(exportResults, "fprintf(results, \"time\");\n");
 
 	for (int i = 0; i < Model_getNumSpecies(m); i++) {
@@ -312,7 +317,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "while(indexMax > indexMin){\n");
 	fprintf(updatePropencities, "reaction = (indexMin + indexMax)/2;\n");
 	fprintf(updatePropencities, "if(cummulative_p[reaction] <= random){\n");
-	fprintf(updatePropencities, "if(cummulative_p[reaction + 1] > random){\n");
+	fprintf(updatePropencities, "if(cummulative_p[reaction + 1] >= random){\n");
 	fprintf(updatePropencities, "reaction++;\n");
 	fprintf(updatePropencities, "break;\n");
 	fprintf(updatePropencities, "}\n");

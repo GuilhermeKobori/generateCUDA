@@ -1487,75 +1487,75 @@ void simulate(int numberOfExecutions, float* output, curandState *state, float s
 		cummulative_p[110] = cummulative_p[109] + kdegAntiAb * antiAb;
 		cummulative_p[111] = cummulative_p[110] + kremROS * ROS;
 		if (time >= segmentSize * numberOfExecutions + step * stepCount) {
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 0], species[0]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 1], species[1]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 2], species[2]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 3], species[3]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 4], species[4]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 5], species[5]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 6], species[6]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 7], species[7]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 8], species[8]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 9], species[9]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 10], species[10]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 11], species[11]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 12], species[12]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 13], species[13]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 14], species[14]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 15], species[15]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 16], species[16]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 17], species[17]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 18], species[18]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 19], species[19]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 20], species[20]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 21], species[21]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 22], species[22]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 23], species[23]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 24], species[24]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 25], species[25]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 26], species[26]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 27], species[27]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 28], species[28]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 29], species[29]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 30], species[30]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 31], species[31]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 32], species[32]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 33], species[33]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 34], species[34]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 35], species[35]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 36], species[36]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 37], species[37]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 38], species[38]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 39], species[39]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 40], species[40]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 41], species[41]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 42], species[42]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 43], species[43]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 44], species[44]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 45], species[45]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 46], species[46]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 47], species[47]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 48], species[48]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 49], species[49]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 50], species[50]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 51], species[51]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 52], species[52]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 53], species[53]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 54], species[54]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 55], species[55]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 56], species[56]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 57], species[57]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 58], species[58]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 59], species[59]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 60], species[60]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 61], species[61]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 62], species[62]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 63], species[63]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 64], species[64]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 65], species[65]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 66], species[66]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 67], species[67]);
-			atomicAdd(&output[69 * 34 * numberOfExecutions + stepCount * 69 + 68], species[68]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 0], species[0]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 1], species[1]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 2], species[2]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 3], species[3]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 4], species[4]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 5], species[5]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 6], species[6]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 7], species[7]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 8], species[8]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 9], species[9]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 10], species[10]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 11], species[11]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 12], species[12]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 13], species[13]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 14], species[14]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 15], species[15]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 16], species[16]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 17], species[17]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 18], species[18]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 19], species[19]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 20], species[20]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 21], species[21]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 22], species[22]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 23], species[23]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 24], species[24]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 25], species[25]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 26], species[26]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 27], species[27]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 28], species[28]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 29], species[29]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 30], species[30]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 31], species[31]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 32], species[32]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 33], species[33]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 34], species[34]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 35], species[35]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 36], species[36]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 37], species[37]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 38], species[38]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 39], species[39]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 40], species[40]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 41], species[41]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 42], species[42]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 43], species[43]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 44], species[44]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 45], species[45]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 46], species[46]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 47], species[47]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 48], species[48]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 49], species[49]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 50], species[50]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 51], species[51]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 52], species[52]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 53], species[53]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 54], species[54]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 55], species[55]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 56], species[56]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 57], species[57]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 58], species[58]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 59], species[59]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 60], species[60]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 61], species[61]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 62], species[62]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 63], species[63]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 64], species[64]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 65], species[65]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 66], species[66]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 67], species[67]);
+			atomicAdd(&output[69 * 12 * numberOfExecutions + stepCount * 69 + 68], species[68]);
 			stepCount++;
 		}
 		sum_p = cummulative_p[111];
@@ -1569,7 +1569,7 @@ void simulate(int numberOfExecutions, float* output, curandState *state, float s
 		while (indexMax > indexMin) {
 			reaction = (indexMin + indexMax) / 2;
 			if (cummulative_p[reaction] <= random) {
-				if (cummulative_p[reaction + 1] > random) {
+				if (cummulative_p[reaction + 1] >= random) {
 					reaction++;
 					break;
 				}
@@ -1673,13 +1673,13 @@ int main()
 	cudaError_t cudaStatus;
 	float* output;
 	float* dev_output;
-	output = (float*)malloc(334 * 69 * sizeof(float));
-	for (int i = 0; i < 334 * 69; i++) {
+	output = (float*)malloc(23 * 69 * sizeof(float));
+	for (int i = 0; i < 23 * 69; i++) {
 		output[i] = 0;
 	}
-	cudaStatus = cudaMalloc(&dev_output, 334 * 69 * sizeof(float));
+	cudaStatus = cudaMalloc(&dev_output, 23 * 69 * sizeof(float));
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMalloc failed!"); goto Error; }
-	cudaStatus = cudaMemcpy(dev_output, output, 334 * 69 * sizeof(float), cudaMemcpyHostToDevice);
+	cudaStatus = cudaMemcpy(dev_output, output, 23 * 69 * sizeof(float), cudaMemcpyHostToDevice);
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
 	float* species_global;
 	cudaStatus = cudaMalloc(&species_global, 69 * 32 * sizeof(float));
@@ -1759,33 +1759,35 @@ int main()
 	curandState *devStates;
 	CUDA_CALL(cudaMalloc((void **)&devStates, 32 * sizeof(curandState)));
 	initCurand << <1, 32 >> > (devStates, SEED);
+	clock_t begin = clock();
 	cudaEvent_t start, stop;
 	float milliseconds;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
-	printf("GO\n");
-	for (int i = 0; i < 10; i++) {
+	printf("Starting kernel\n");
+	for (int i = 0; i < 2; i++) {
 		cudaEventRecord(start);
+		simulate << <1, 32 >> > (i, dev_output, devStates, 900.0000000000, 20000.0000000000, 10000, species_global); cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "addKernel launch failed: %s\n", cudaGetErrorString(cudaStatus)); goto Error; }
 
-		simulate << <1, 32 >> > (i, dev_output, devStates, 60.0000000000, 20000.0000000000, 2000, species_global); cudaStatus = cudaGetLastError(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "addKernel launch failed: %s\n", cudaGetErrorString(cudaStatus)); goto Error; }
-
-		cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaDeviceSynchronize returned error code %d after launching addKernel!\n", cudaStatus); goto Error; }
-		cudaEventRecord(stop);
-		printf("%d\n", i);
+		cudaStatus = cudaDeviceSynchronize(); if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaDeviceSynchronize returned error code %d after launching addKernel!\n", cudaStatus); goto Error; }cudaEventRecord(stop);
+		printf("SEGMENT %d\n", i);
 		cudaEventSynchronize(stop);
 		milliseconds = 0;
 		cudaEventElapsedTime(&milliseconds, start, stop);
-		printf("TIME: %lf\n", milliseconds);
+		printf("TIME: %lf\n\n", milliseconds);
 	}
 
 
-	cudaStatus = cudaMemcpy(output, dev_output, 334 * 69 * sizeof(float), cudaMemcpyDeviceToHost);
+	cudaStatus = cudaMemcpy(output, dev_output, 23 * 69 * sizeof(float), cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess) { fprintf(stderr, "cudaMemcpy failed!"); goto Error; }
 	FILE* results = fopen("results.csv", "w");
 	if (results == NULL) {
 		printf("Error acesssing results!");
 		exit(1);
 	}
+	clock_t end = clock();
+	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	printf("TOTAL EXECUTION TIME : %lf\n", time_spent);
 	fprintf(results, "time");
 	fprintf(results, ", Mdm2");
 	fprintf(results, ", p53");
@@ -1857,8 +1859,8 @@ int main()
 	fprintf(results, ", Source");
 	fprintf(results, ", Sink");
 	fprintf(results, "\n");
-	for (int i = 0; i < 334; i++) {
-		fprintf(results, "%.10lf", 60.0000000000*i);
+	for (int i = 0; i < 23; i++) {
+		fprintf(results, "%.10lf", 900.0000000000*i);
 		for (int j = 0; j < 69; j++) {
 			fprintf(results, ", %.10lf", output[69 * i + j] / 32);
 		}
