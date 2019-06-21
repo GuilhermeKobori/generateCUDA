@@ -5,6 +5,7 @@
 #include <curand_kernel.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define CUDA_CALL(x) do { if((x) != cudaSuccess) { \
     printf("Error at %s:%d\n",__FILE__,__LINE__); \

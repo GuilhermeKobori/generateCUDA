@@ -233,6 +233,8 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 
 	fprintf(kernelVariablesInit, "float species[%d];\n", Model_getNumSpecies(m));
+	fprintf(kernelVariablesInit, "float aux_species[%d];\n", maxReactionSpecies);
+	fprintf(kernelVariablesInit, "int flag_negative;\n");
 
 	for (int i = 0; i < Model_getNumSpecies(m); i++) {
 		Species_t* s = ListOf_get(species, i);
@@ -330,9 +332,17 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "}\n");
 	fprintf(updatePropencities, "}\n");
 
+	fprintf(updatePropencities, "flag_negative = 0;\n");
 	fprintf(updatePropencities, "for(int i = 0; i < %d; i++){\n", maxReactionSpecies);
-	fprintf(updatePropencities, "if(reactionsSpecies[reaction][i] == -1) {break;}\n");
+	fprintf(updatePropencities, "if(reactionsSpecies[reaction][i] == -1) {continue;}\n");
+	fprintf(updatePropencities, "aux_species[i] = species[reactionsSpecies[reaction][i]];\n");
 	fprintf(updatePropencities, "species[reactionsSpecies[reaction][i]] += reactionsValues[reaction][i];\n");
+	fprintf(updatePropencities, "if(species[reactionsSpecies[reaction][i]] < 0) flag_negative = 1;\n");
+	fprintf(updatePropencities, "}\n");
+
+	fprintf(updatePropencities, "for(int i = 0; i < %d && flag_negative == 1; i++){\n", maxReactionSpecies);
+	fprintf(updatePropencities, "if(reactionsSpecies[reaction][i] == -1) {continue;}\n");
+	fprintf(updatePropencities, "species[reactionsSpecies[reaction][i]] = aux_species[i];\n");
 	fprintf(updatePropencities, "}\n");
 
 	ListOf_t* events = Model_getListOfEvents(m);
