@@ -311,7 +311,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "if(sum_p > 0) timeStep = -log(random)/sum_p;\n");
 	fprintf(updatePropencities, "else break;\n");
 
-	fprintf(updatePropencities, "random = curand_uniform(&localState);\n");
+	fprintf(updatePropencities, "random = 1 - curand_uniform(&localState);\n");
 
 	fprintf(updatePropencities, "random *= sum_p;\n");
 	fprintf(updatePropencities, "indexMin = 0;\n");
@@ -320,9 +320,8 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	fprintf(updatePropencities, "if(random >= cummulative_p[0]){\n");
 	fprintf(updatePropencities, "while(indexMax > indexMin){\n");
 	fprintf(updatePropencities, "reaction = (indexMin + indexMax + 1)/2;\n");
-	fprintf(updatePropencities, "if(cummulative_p[reaction] <= random){\n");
-	fprintf(updatePropencities, "if(cummulative_p[reaction + 1] >= random){\n");
-	fprintf(updatePropencities, "reaction++;\n");
+	fprintf(updatePropencities, "if(cummulative_p[reaction - 1] <= random){\n");
+	fprintf(updatePropencities, "if(cummulative_p[reaction] > random){\n");
 	fprintf(updatePropencities, "break;\n");
 	fprintf(updatePropencities, "}\n");
 	fprintf(updatePropencities, "else{\n");
