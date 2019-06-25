@@ -33,6 +33,9 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 	FILE* curandInit = fopen("GILLcurandInit", "w");						//initializes random number generator
 	FILE* curandCall = fopen("GILLcurandCall", "w");						//calls random number generator initializer
 	FILE* defineSpeciesUpdates = fopen("GILLdefineSpeciesUpdates", "w");	//defines values for each species that must be updated after a reaction occurs
+	FILE* header = fopen("GILLheader", "w");								//contains header definitions				--SAME FOR EVERY SBML FILE
+	FILE* initMain = fopen("GILLinitMain", "w");							//contains main function declaration		--SAME FOR EVERY SBML FILE
+	FILE* endMain = fopen("GILLendMain", "w");								//contains main function ending section		--SAME FOR EVERY SBML FILE
 
 	//error handling
 	if (updatePropencities == NULL)
@@ -100,6 +103,38 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 		printf("Error accessing defineSpeciesUpdates!");
 		exit(1);
 	}
+	if (header == NULL)
+	{
+		printf("Error accessing header!");
+		exit(1);
+	}
+	if (initMain == NULL)
+	{
+		printf("Error accessing initMain!");
+		exit(1);
+	}
+	if (endMain == NULL)
+	{
+		printf("Error accessing endMain!");
+		exit(1);
+	}
+
+	fprintf(header, "#include \"cuda_runtime.h\"\n");
+	fprintf(header, "#include \"device_launch_parameters.h\"\n");
+	fprintf(header, "#include <cuda.h>\n");
+	fprintf(header, "#include <curand_kernel.h>\n");
+	fprintf(header, "#include <stdio.h>\n");
+	fprintf(header, "#include <stdlib.h>\n");
+	fprintf(header, "#include <time.h>\n");
+	fprintf(header, "#define CUDA_CALL(x) do { if((x) != cudaSuccess) { \\\n");
+	fprintf(header, "printf(\"Error at %%s:%%d\\n\",__FILE__,__LINE__); \\\n");
+	fprintf(header, "return EXIT_FAILURE;}} while(0) \n");
+	fprintf(header, "#define pow powf\n");
+	fprintf(header, "#define SEED 23\n");
+
+	fprintf(initMain, "int main()\n{\n");
+
+	fprintf(endMain, "return 0;\n}\n");
 
 	fprintf(curandInit, "\n__global__ \nvoid initCurand(curandState* state, unsigned long long seed){\n");
 	fprintf(curandInit, "curand_init(seed, threadIdx.x, 0, &state[threadIdx.x]);\n");
@@ -268,7 +303,7 @@ void generateCUDA(Model_t* m, double step, int simulations, double endTime) {
 
 	fprintf(exportResults, "clock_t end = clock();\n");
 	fprintf(exportResults, "double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;\n");
-	fprintf(exportResults, "printf(\"TOTAL EXECUTION TIME : %%lf\\n\", time_spent);\n");
+	fprintf(exportResults, "fprintf(results, \"TOTAL EXECUTION TIME : %%lf\\n\", time_spent);\n");
 
 	fprintf(exportResults, "fprintf(results, \"time\");\n");
 
